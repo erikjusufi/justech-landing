@@ -1,10 +1,10 @@
 /* JusTech design system: the tokens. Everything a page or a product screen needs to look like JusTech, in one file.
    Fonts are SIL OFL and self-hosted (licences beside the files); nothing loads from a third party.
    Ground: violet-grey (Erik's pick, round 8). `data-ground="black"` keeps round 7's black for comparison. */
-@font-face { font-family: 'Geist'; src: url(fonts/Geist-Variable.woff2?v=1cd391dc2ca6) format('woff2'); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: 'Geist Mono'; src: url(fonts/GeistMono-Variable.woff2?v=1cd391dc2ca6) format('woff2'); font-weight: 100 900; font-display: swap; }
-@font-face { font-family: 'Bricolage Grotesque'; src: url(fonts/BricolageGrotesque-Variable.woff2?v=1cd391dc2ca6) format('woff2'); font-weight: 200 800; font-stretch: 75% 100%; font-display: swap; }
-@font-face { font-family: 'Instrument Serif'; src: url(fonts/InstrumentSerif-Italic.woff2?v=1cd391dc2ca6) format('woff2'); font-style: italic; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Geist'; src: url(fonts/Geist-Variable.woff2?v=e7135f6c2cc0) format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Geist Mono'; src: url(fonts/GeistMono-Variable.woff2?v=e7135f6c2cc0) format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Bricolage Grotesque'; src: url(fonts/BricolageGrotesque-Variable.woff2?v=e7135f6c2cc0) format('woff2'); font-weight: 200 800; font-stretch: 75% 100%; font-display: swap; }
+@font-face { font-family: 'Instrument Serif'; src: url(fonts/InstrumentSerif-Italic.woff2?v=e7135f6c2cc0) format('woff2'); font-style: italic; font-weight: 400; font-display: swap; }
 
 :root {
   /* ground: three steps of violet-grey, the page, a panel, a raised panel */

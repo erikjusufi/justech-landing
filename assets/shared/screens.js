@@ -1,5 +1,5 @@
-// The three product moments for the landing's showcase, built as DOM and SVG from demo data (the invented Adriatic
-// Kayak Tours on demo.justech.uk; never a client's numbers). One idea per screen:
+// The three product moments for the landing's showcase, built as DOM and SVG from demo data (an invented
+// kayak business, "Kayak Demo · Pula", on demo.justech.uk; never a client's numbers). One idea per screen:
 //   Insight: the plain-words sentence, and its "why" tied by a line to the event on the chart.
 //   Content: an edit made inside the site's own look; what the site's style does not allow is locked, not broken.
 //   Ops:     tonight's 03:00 checks, ticking through.
@@ -81,7 +81,7 @@ function insight() {
 function content() {
   return h('div', { class: 'moment m-content', 'data-moment': 'content' },
     h('div', { class: 'layer site' },
-      h('div', { class: 'site-bar' }, h('b', { text: 'Adriatic Kayak Tours' }), h('span', { text: 'Tours' }), h('span', { text: 'Rentals' }), h('span', { text: 'About' }), h('span', { class: 'site-cta', text: 'Book' })),
+      h('div', { class: 'site-bar' }, h('b', { text: 'Kayak Demo · Pula' }), h('span', { text: 'Tours' }), h('span', { text: 'Rentals' }), h('span', { text: 'About' }), h('span', { class: 'site-cta', text: 'Book' })),
       h('div', { class: 'site-hero' },
         h('div', { class: 'sea', 'aria-hidden': 'true' }, h('i'), h('i'), h('i')),
         h('div', { class: 'site-copy' },
