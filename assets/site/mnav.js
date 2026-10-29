@@ -6,8 +6,8 @@
 // figure in small, its name and its line, Sign in in the panel's head; then Contact. It fits a small phone without
 // scrolling. Links resolve from the page's own Home link, so this works at any depth (and the 404 page). The footer's
 // field is drawn here too, as the one module every page shares.
-import { tfield, reduced } from '../system/tfield.js?v=56738ba881b3';
-import { mark } from '../system/figures.js?v=56738ba881b3';
+import { tfield, reduced } from '../system/tfield.js?v=5bd48d052298';
+import { mark } from '../system/figures.js?v=5bd48d052298';
 
 const nav = document.querySelector('.hnav');
 if (nav) {

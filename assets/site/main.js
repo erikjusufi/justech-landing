@@ -1,12 +1,12 @@
 // JusTech landing, round 10 (round 12: Jus rebuilt; round 11: the hero shared with the contact page, the web half fits one screen, the
 // agent narrated, the page snaps to its parts): the hero, then the two halves of the offer (on the web, with Just App; AI and custom),
 // then Jus. Round 10 keeps the T-field where it means something: the hero, the agent, the ordering.
-import './mnav.js?v=56738ba881b3'; // round 17e: the small navigation on phones
-import { tfield, reduced } from '../system/tfield.js?v=56738ba881b3';
-import { ignite, rel, wait } from '../system/ignite.js?v=56738ba881b3';
-import { mark, figure, box } from '../system/figures.js?v=56738ba881b3';
-import { showcase } from '../shared/showcase.js?v=56738ba881b3';
-import { heroField } from './herofield.js?v=56738ba881b3';
+import './mnav.js?v=5bd48d052298'; // round 17e: the small navigation on phones
+import { tfield, reduced } from '../system/tfield.js?v=5bd48d052298';
+import { ignite, rel, wait } from '../system/ignite.js?v=5bd48d052298';
+import { mark, figure, box } from '../system/figures.js?v=5bd48d052298';
+import { showcase } from '../shared/showcase.js?v=5bd48d052298';
+import { heroField } from './herofield.js?v=5bd48d052298';
 const $ = (s, r = document) => r.querySelector(s);
 const mobile = matchMedia('(max-width: 760px)').matches;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
