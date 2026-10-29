@@ -1,4 +1,4 @@
-// JusTech landing, round 10 (round 11: the hero shared with the contact page, the web half fits one screen, the
+// JusTech landing, round 10 (round 12: Jus rebuilt; round 11: the hero shared with the contact page, the web half fits one screen, the
 // agent narrated, the page snaps to its parts): the hero, then the two halves of the offer (on the web, with JustApp; AI and custom),
 // then Jus. Round 10 keeps the T-field where it means something: the hero, the agent, the ordering.
 import { tfield, reduced } from '../system/tfield.js';
@@ -93,24 +93,52 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
   }
 }
 
-// 4 · Jus, over order: round 10 puts it in a panel, the field only on the side away from the text, and the field
-// falls into one weave (every arm meeting another) once, as the panel comes into view; no more scrolling through it
+// 4 · Jus (round 12): the field fills the panel, loose, quiet behind the words and the cards. As the panel comes into
+// view it falls into one weave (every arm meeting another) from the lilac dot outward; as the order reaches each card,
+// a signal runs to it along the weave and the card shows its fact: what the figure rests on, the zero struck out.
+// Then signals keep leaving the dot, slowly: once everything joins, light can go anywhere.
 {
-  const sec = $('.order'), meter = $('.meter b', sec);
+  const sec = $('.order'), meter = $('.meter b', sec), dot = $('.jus .dot', sec), cards = [...sec.querySelectorAll('.pc')];
   const ord = t => ((t.i + t.j) % 2 ? 2 : 0);
-  const side = mobile ? (x, y) => Math.min(1, Math.max(0, (y - 0.56) * 6)) : (x, y) => Math.min(1, Math.max(0, (x - 0.5) * 5));
-  const field = tfield($('canvas', sec), { cell: mobile ? 36 : 48, weight: 0.22, seed: [mobile ? 0.5 : 0.78, mobile ? 0.8 : 0.5], mix: [1, 1], ink: 'oklch(0.6 0.17 297 / .38)', glow: LILAC, lit: 0, growMs: 900,
-    mask: (x, y) => side(x, y) * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 6),
-    onLayout(f) { f.tiles.forEach(t => { t.th = t.rnd; }); },
+  const rect = el => { const b = el.getBoundingClientRect(), o = sec.getBoundingClientRect(); return { x: b.left - o.left, y: b.top - o.top, w: b.width, h: b.height }; };
+  const d0 = rect(dot), o0 = sec.getBoundingClientRect();
+  const from = [d0.x + d0.w / 2, d0.y + d0.h * 0.78], out = () => [d0.x + d0.w + field.cell * 0.9, from[1]]; // the order spreads from the dot; light leaves beside it
+  // quiet behind each line of the words (not the whole block, so the field reaches in beside the short lines), the cards, the meter
+  const lines = el => { const g = document.createRange(); g.selectNodeContents(el); const o = sec.getBoundingClientRect(); return [...g.getClientRects()].map(b => ({ x: b.left - o.left, y: b.top - o.top, w: b.width, h: b.height })); };
+  const quiet = () => [...[...sec.querySelectorAll('.jus > *')].flatMap(lines).map(r => pad(r, 16)), ...cards.map(c => pad(rect(c), 10)), pad(rect(meter.parentNode), 8)];
+  let rs = quiet(); addEventListener('resize', () => { rs = quiet(); });
+  const pulses = { every: 1500, max: 0, cap: 4, ms: 70, trail: 3.2, blur: 12, from: f => ({ tile: f.tileAt(...out()), color: LILAC }) };
+  const field = tfield($('canvas', sec), { cell: mobile ? 32 : 40, weight: 0.22, seed: [from[0] / o0.width, from[1] / o0.height], mix: [1, 1], ink: 'oklch(0.6 0.17 297 / .4)', glow: LILAC, lit: 0, growMs: 900, pulses,
+    mask: (x, y, t) => (t && inside(t, rs) ? 0.07 : 1) * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 7),
+    onLayout(f) { rs = quiet(); f.tiles.forEach(t => { t.th = t.rnd; }); },
     after(ctx, now, f) {
-      // the figure: the share of arms, in view, that meet a neighbour's arm
-      let all = 0, met = 0; const D = [[0, -1], [1, 0], [0, 1], [-1, 0]];
-      for (const t of f.tiles) { if (t.cx > f.W || t.cy > f.H || side(t.cx / f.W, t.cy / f.H) < 0.5) continue; const r = Math.round(t.shown);
-        for (const a of [0, 1, 3]) { const dir = (a + ((r % 4) + 4)) % 4, n = f.tiles[(t.j + D[dir][1]) * f.cols + t.i + D[dir][0]]; if (t.i + D[dir][0] < 0 || t.j + D[dir][1] < 0 || !n || n.cx > f.W + f.cell || n.cy > f.H + f.cell || side(n.cx / f.W, n.cy / f.H) < 0.5) continue; all++;
+      // the figure: the share of arms, in view and out in the open, that meet a neighbour's arm
+      let all = 0, met = 0; const D = [[0, -1], [1, 0], [0, 1], [-1, 0]], open = t => t.cx < f.W && t.cy < f.H && !inside(t, rs);
+      for (const t of f.tiles) { if (!open(t)) continue; const r = Math.round(t.shown);
+        for (const a of [0, 1, 3]) { const dir = (a + ((r % 4) + 4)) % 4, ni = t.i + D[dir][0], nj = t.j + D[dir][1]; if (ni < 0 || nj < 0 || ni >= f.cols) continue; const n = f.tiles[nj * f.cols + ni]; if (!n || !open(n)) continue; all++;
           const nr = Math.round(n.shown); if ([0, 1, 3].map(b => (b + ((nr % 4) + 4)) % 4).includes((dir + 2) % 4)) met++; } }
       const v = `${Math.round((100 * met) / Math.max(1, all))} %`; if (meter.textContent !== v) meter.textContent = v;
     } });
-  const order = () => { for (const t of field.tiles) field.set(t, ord(t), reduced ? 0 : 500 + t.th * 2200, 0.7); };
+  // the shortest walk along joined arms (the weave, once ordered) from a tile to another
+  const walk = (a, b) => { const prev = new Map([[a, null]]), q = [a];
+    while (q.length) { const t = q.shift(); if (t === b) break; for (const n of field.joined(t)) if (!prev.has(n) && (n === b || !inside(n, rs))) { prev.set(n, t); q.push(n); } }
+    if (!prev.has(b)) return null; const out = []; for (let t = b; t; t = prev.get(t)) out.unshift(t); return out; };
+  const SPEED = 0.75; // px per ms: how fast the order spreads from the dot
+  if (!reduced) sec.classList.add('armed');
+  const order = () => {
+    sec.classList.add('lit');
+    for (const t of field.tiles) field.set(t, ord(t), reduced ? 0 : 250 + Math.hypot(t.cx - from[0], t.cy - from[1]) / SPEED + t.th * 160, 0.75);
+    const last = reduced ? 0 : 250 + Math.hypot(field.W, field.H) / SPEED + 400;
+    cards.forEach(c => {
+      const r = rect(c), to = [mobile ? r.x + r.w * 0.5 : r.x - field.cell * 0.6, mobile ? r.y - field.cell * 0.6 : r.y + r.h / 2];
+      const reach = reduced ? 0 : 250 + Math.hypot(to[0] - from[0], to[1] - from[1]) / SPEED + 200;
+      setTimeout(() => {
+        const path = reduced ? null : walk(field.tileAt(...out()), field.tileAt(...to));
+        if (path) field.send(path, () => c.classList.add('on'), { color: LILAC, ms: 26 }); else c.classList.add('on');
+      }, reach);
+    });
+    setTimeout(() => { pulses.max = reduced ? 0 : 2; field.kick(); }, last);
+  };
   new IntersectionObserver(([e], o) => { if (e.isIntersecting) { o.disconnect(); order(); } }, { threshold: 0.5 }).observe(sec);
 }
 

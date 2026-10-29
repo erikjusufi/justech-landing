@@ -316,7 +316,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 @media (prefers-reduced-motion: no-preference) { .lit .cue svg { animation: nudge 1.8s ease-in-out 2s 3; } @keyframes nudge { 50% { transform: translateY(3px); } } }
 .rail { position: fixed; z-index: 40; right: 18px; top: 50%; translate: 0 -50%; display: grid; gap: 4px; opacity: 0; pointer-events: none; transition: opacity .4s; }
 .rail.shown { opacity: 1; pointer-events: auto; }
-.rail a { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 6px 4px; font-size: 12px; font-family: var(--mono); color: var(--text-3); flex-direction: row-reverse; }
+.rail a { display: flex; align-items: center; justify-content: flex-start; gap: 10px; padding: 6px 4px; font-size: 12px; font-family: var(--mono); color: var(--text-3); flex-direction: row-reverse; }
 .rail i { width: 8px; height: 8px; border-radius: 2px; background: var(--text-3); opacity: .5; transition: all .3s; flex: none; }
 .rail span { opacity: 0; translate: 6px 0; transition: opacity .3s, translate .3s; white-space: nowrap; padding: 3px 8px; border-radius: 99px; background: rgba(23,20,29,.8); }
 .rail a:hover span, .rail a[aria-current] span { opacity: 1; translate: 0 0; }
@@ -359,6 +359,56 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .js .ctop[data-ignite] .ch { opacity: 1; transform: translateY(.04em); }
 .ctop h1 .ch { display: inline-block; }
 .ctop { position: relative; }
-.built .slot { max-width: none; white-space: nowrap; }
+.built .slot { right: auto; max-width: 100%; white-space: normal; }
 .rail a[aria-current] span { opacity: 0; translate: 6px 0; } .rail a:hover span { opacity: 1; translate: 0 0; }
-@media (max-width: 760px) { .built .slot { white-space: normal; } }
+
+/* round 12 · Jus, rebuilt: the field fills the panel and falls into order from the lilac dot outward; the two facts
+   become two demo cards that the order reaches: a figure with what it rests on, and a zero struck out for "Not measured" */
+.order { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 410px); align-items: center; gap: clamp(32px, 5vw, 88px);
+  padding: clamp(48px, 7vh, 80px) clamp(24px, 4.4vw, 64px) clamp(80px, 11vh, 104px); min-height: min(740px, calc(100svh - 80px)); }
+.order .jus { position: relative; left: auto; top: auto; translate: none; max-width: 600px; }
+.order .jus h2 { font-size: clamp(88px, 13vw, 200px); }
+.order .jus h2 .dot { display: inline-block; transition: text-shadow .6s var(--ease); }
+.order.lit .jus h2 .dot { text-shadow: 0 0 28px var(--lilac), 0 0 6px var(--lilac); }
+.order .jus .stmt { font-size: clamp(30px, 3.4vw, 48px); max-width: 14ch; }
+.order .meter { left: clamp(24px, 4.4vw, 64px); right: auto; bottom: 34px; }
+.proof { position: relative; z-index: 1; margin: 0; padding: 0; list-style: none; display: grid; gap: 16px; }
+.pc { padding: 18px 20px 16px; border-radius: var(--r-2); background: rgba(23,20,29,.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 0 0 1px var(--ring), 0 24px 60px -30px rgba(0,0,0,.7); }
+.pv { display: grid; gap: 6px; }
+.pv .pk { font-family: var(--mono); font-size: 12px; color: var(--text-3); }
+.pv b { display: grid; font-family: var(--display); font-weight: 760; font-size: 46px; line-height: 1; letter-spacing: -0.04em; font-variation-settings: 'opsz' 96, 'wdth' 82; }
+.pv b > * { grid-area: 1 / 1; }
+.pv .src { display: flex; align-items: center; gap: 9px; font-family: var(--mono); font-size: 12px; color: var(--text-2); }
+.pv .src i { flex: none; width: 8px; height: 8px; background: var(--lilac); box-shadow: 0 0 10px var(--lilac); }
+.nm s { text-decoration: none; position: relative; justify-self: start; opacity: 0; }
+.nm s::after { content: ''; position: absolute; left: -12%; right: -12%; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; background: var(--lilac); }
+.nm em { font-style: normal; color: var(--text-2); font-size: .7em; align-self: center; }
+.nm .src i { background: none; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.pc p { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--ring); font-size: 15.5px; line-height: 1.45; color: var(--text); }
+/* before the order reaches a card (motion only): the source not yet lit; the zero standing, not yet struck */
+.order.armed .pc { transition: box-shadow .6s var(--ease); }
+.order.armed .pc .src { transition: color .5s var(--ease); } .order.armed .pc .src i { transition: background .5s, box-shadow .5s; }
+.order.armed .pc:not(.on) .src { color: var(--text-3); }
+.order.armed .rests:not(.on) .src i { background: transparent; box-shadow: inset 0 0 0 1.5px var(--text-3); }
+.order.armed .pc.on { box-shadow: 0 0 0 1px oklch(0.75 0.12 297 / .5), 0 24px 60px -30px rgba(0,0,0,.7); }
+.order.armed .nm s { opacity: 1; transition: opacity .35s .75s; }
+.order.armed .nm s::after { transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease) .2s; }
+.order.armed .nm em { opacity: 0; transition: opacity .4s .95s; }
+.order.armed .nm.on s { opacity: 0; } .order.armed .nm.on s::after { transform: scaleX(1); } .order.armed .nm.on em { opacity: 1; }
+@media (max-width: 900px) {
+  .order { grid-template-columns: 1fr; align-items: start; gap: 34px; }
+  .order .jus { top: auto; left: auto; right: auto; }
+}
+@media (max-width: 760px) {
+  .order { padding: 30px 20px 76px; min-height: 0; }
+  .order .jus h2 { font-size: clamp(76px, 24vw, 110px); }
+  .pv b { font-size: 40px; }
+}
+/* round 12 · between phone and wide desktop the words and the agent's panel overlapped: the words keep to their half */
+@media (min-width: 761px) { .built .btext { max-width: min(620px, 52%); } }
+/* round 12 · tablet widths (761–1020), untested until now: the nav dropped its links only on phones and overflowed; the
+   JustApp panel's one column took the demo screen's full 1040px; the glow behind it widened the page */
+@media (max-width: 1020px) { .hnav .links { display: none; } }
+@media (max-width: 960px) { .glass.app { grid-template-columns: minmax(0, 1fr); } }
+#web { overflow-x: clip; }
+@media (max-width: 1020px) { .others { grid-template-columns: minmax(0, 1fr); } }
