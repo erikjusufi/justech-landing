@@ -32,6 +32,17 @@ jobs:
         run: docker exec site wget -qO- http://127.0.0.1:8080/healthz
       - name: The site's checks
         run: sh server/check.sh http://127.0.0.1:8080 503
+      - name: Again with a stray PORT (an app's old variables stay in Coolify when its build pack changes)
+        run: |
+          docker run -d --name site80 -p 8081:8080 -e PORT=80 justech-site
+          for i in $(seq 1 45); do
+            running=$(docker inspect -f '{{.State.Running}}' site80); health=$(docker inspect -f '{{.State.Health.Status}}' site80)
+            echo "$i running=$running health=$health"
+            [ "$health" = healthy ] && { sh server/check.sh http://127.0.0.1:8081 503; exit $?; }
+            [ "$running" = false ] && { echo "the container exited"; docker logs site80; exit 1; }
+            sleep 2
+          done
+          echo "not healthy after 90 s"; docker logs site80; docker inspect -f '{{json .State.Health}}' site80; exit 1
       - name: On failure, the container's logs and health log
         if: failure()
         run: |
