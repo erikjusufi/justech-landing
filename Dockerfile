@@ -5,7 +5,7 @@
 FROM node:22-alpine
 WORKDIR /srv
 COPY . /srv/site
-RUN mv /srv/site/server/server.mjs /srv/server.mjs \
+RUN mv /srv/site/server/server.mjs /srv/server.mjs && mv /srv/site/server/mail /srv/mail \
  && rm -rf /srv/site/server /srv/site/Dockerfile /srv/site/.dockerignore /srv/site/README.md
 ENV NODE_ENV=production SITE_PORT=8080 SITE_ROOT=/srv/site
 USER node

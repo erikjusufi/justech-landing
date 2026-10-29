@@ -2,7 +2,7 @@
 // the field's seed, and the network grows from where it lands. Used by the hero and by every product's opening.
 // The box carries [data-ignite]; its letters are .ch, the one that lights is .T; .drop is the spark.
 // Under prefers-reduced-motion everything is simply there.
-import { reduced } from './tfield.js?v=abddb8146374';
+import { reduced } from './tfield.js?v=d550cc9b314e';
 export const wait = ms => new Promise(f => setTimeout(f, reduced ? 0 : ms));
 export const rel = (el, box) => { const a = el.getBoundingClientRect(), b = box.getBoundingClientRect(); return { x: a.left - b.left, y: a.top - b.top, w: a.width, h: a.height, cx: a.left - b.left + a.width / 2, cy: a.top - b.top + a.height / 2 }; };
 
