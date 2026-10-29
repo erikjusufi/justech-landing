@@ -3,13 +3,13 @@
 // `box` carries [data-ignite] and holds a canvas, a .drop and the letters (.ch, the one that lights .T); `quiet` are the
 // elements the field goes quiet behind.
 import { tfield, reduced } from '../system/tfield.js';
-import { ignite, rel } from '../system/ignite.js';
+import { ignite, rel, wait } from '../system/ignite.js';
 const mobile = matchMedia('(max-width: 760px)').matches;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const inside = (t, rs) => rs.some(r => t.cx > r.x && t.cx < r.x + r.w && t.cy > r.y && t.cy < r.y + r.h);
 const pad = (r, p) => ({ x: r.x - p, y: r.y - p, w: r.w + 2 * p, h: r.h + 2 * p });
 
-export function heroField(box, { quiet: quietEls }) {
+export function heroField(box, { quiet: quietEls, sparks = 5 }) {
   const SIG = { t: css('--sig-t'), hub: css('--sig-hub'), edge: css('--sig-edge') };
   const T = box.querySelector('.T'), chs = [...box.querySelectorAll('.ch')];
   const d = mobile ? { cell: 23, w: 0.27, hubs: 6 } : { cell: 38, w: 0.27, hubs: 11 }; // Densest, Erik's pick
@@ -49,10 +49,42 @@ export function heroField(box, { quiet: quietEls }) {
   // once locked the T is one glyph again, so no seam shows at rest. The copy is made here, so the page's text stays.
   // Round 11: faster (0.9 s) and smooth: one fall with gravity, the turn finished just before it lands.
   const half = (cls, txt) => { const e = document.createElement('span'); e.className = `th ${cls}`; e.textContent = txt; return e; };
-  if (!reduced) { const g = T.textContent; T.textContent = ''; T.append(half('a', g)); const b = half('b', g); b.setAttribute('aria-hidden', 'true'); T.append(b); }
+  // Round 15: where the word starts as the mark (.xm, the landing), the mark comes apart into the word instead, and
+  // J3 is left out; either way the T then throws several sparks, and the field grows from where they land.
+  const mark = box.querySelector('.xm');
+  if (!reduced && !mark && box.hasAttribute('data-j3')) { const g = T.textContent; T.textContent = ''; T.append(half('a', g)); const b = half('b', g); b.setAttribute('aria-hidden', 'true'); T.append(b); }
   const FALL = 950;
-  const play = () => { if (!reduced) { box.classList.add('split'); setTimeout(() => box.classList.remove('split'), 120 + FALL); }
-    return ignite({ box, T, drop: box.querySelector('.drop'), field, rise: FALL + 60, hold: 280 }); };
+  const play = async () => {
+    if (mark) { box.classList.add('early'); if (!reduced) await fromMark(box, mark, chs); return ignite({ box, T, drop: box.querySelector('.drop'), field, rise: 40, hold: 220, sparks }); }
+    if (!reduced) { box.classList.add('split'); setTimeout(() => box.classList.remove('split'), 120 + FALL); }
+    return ignite({ box, T, drop: box.querySelector('.drop'), field, rise: FALL + 60, hold: 280, sparks }); };
   play();
   return { field, play };
+}
+
+// The mark comes apart into the word (round 15). The mark stands between where the J and the T will be; its tile
+// gives way, and its two letters turn the word's colours (the J white, the T lilac); the J goes left and the T right,
+// each to its letter, which takes over as it arrives; u and s open up in the gap between them, and e, c, h follow the T.
+// The letters are hidden by CSS until then ([data-mark] .ch), so nothing shows before the mark.
+async function fromMark(box, mark, chs) {
+  const [J, u, s, T, ...rest] = chs, tile = mark.querySelector('.xt'), pj = mark.querySelector('.pj'), pt = mark.querySelector('.pt');
+  const unit = mark.getBoundingClientRect().width / 100; // px per mark unit
+  const shift = (part, letter) => { const a = part.getBoundingClientRect(), b = letter.getBoundingClientRect(); return [(b.left + b.width / 2 - (a.left + a.width / 2)) / unit, 0]; };
+  const glow = mark.animate([{ filter: 'brightness(1)' }, { filter: 'brightness(1.15) drop-shadow(0 0 6px rgba(214,196,255,.8))', offset: 0.35 }, { filter: 'brightness(1)' }], { duration: 520 });
+  await glow.finished.catch(() => {});
+  // the tile gives way; the letters take the word's colours
+  tile.animate([{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(1.08)' }], { duration: 320, easing: 'ease-in', fill: 'forwards' });
+  pj.querySelector('path').animate([{ fill: 'oklch(0.62 0.2 300)' }, { fill: '#f1edf7' }], { duration: 320, fill: 'forwards' });
+  pt.querySelector('path').animate([{ fill: 'oklch(0.46 0.2 293)' }, { fill: 'oklch(0.86 0.09 300)' }], { duration: 320, fill: 'forwards' });
+  await wait(200);
+  // apart: J left, T right, and each letter takes over from its part as it arrives
+  const [jx] = shift(pj, J), [tx] = shift(pt, T), move = { duration: 620, easing: 'cubic-bezier(.55,0,.25,1)', fill: 'forwards' };
+  pj.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${jx}px, 0)` }], move);
+  pt.animate([{ transform: 'translate(0,0)' }, { transform: `translate(${tx}px, 0)` }], move);
+  const show = (el, delay, from = 'scale(.7)') => el.animate([{ opacity: 0, transform: from }, { opacity: 1, transform: 'none' }], { duration: 420, delay, easing: 'cubic-bezier(.2,.8,.3,1)', fill: 'both' });
+  for (const [part, letter] of [[pj, J], [pt, T]]) { part.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, delay: 480, fill: 'forwards' }); show(letter, 440, 'none'); }
+  show(u, 300); show(s, 260);
+  rest.forEach((el, k) => show(el, 420 + k * 60, 'translateX(-.25em)'));
+  await wait(420 + rest.length * 60 + 160);
+  mark.style.visibility = 'hidden';
 }

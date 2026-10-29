@@ -412,3 +412,41 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 @media (max-width: 960px) { .glass.app { grid-template-columns: minmax(0, 1fr); } }
 #web { overflow-x: clip; }
 @media (max-width: 1020px) { .others { grid-template-columns: minmax(0, 1fr); } }
+
+/* round 15 · on a phone the narrated run sits in the flow under the agent's figure (it was pinned to the panel's
+   foot, and the figure's labels ran into it) */
+@media (max-width: 760px) {
+  .built { min-height: 0; padding-bottom: 14px; }
+  .run { position: relative; left: auto; right: auto; bottom: auto; width: auto; margin: 330px 14px 0; }
+}
+/* round 15 · phones settle too: at the start of each part, and inside the long parts at what we want seen (the JustApp
+   panel, the agent's figure with its run, the two Jus cards); between them the page scrolls freely (proximity) */
+@media (max-width: 899px) and (prefers-reduced-motion: no-preference) {
+  html.snapping { scroll-snap-type: y proximity; }
+  .snapping .hero, .snapping .snap, .snapping .glass.app, .snapping .run, .snapping .proof { scroll-snap-align: start; }
+  .snapping .snap, .snapping .glass.app, .snapping .proof { scroll-margin-top: 12px; }
+  .snapping .run { scroll-margin-top: 330px; }
+  .snapping .snap-end { scroll-snap-align: end; }
+}
+/* round 15 · Jus: the loose ends, counted, under "We build things the right way."; the caption turns once none are left */
+.order .loose { margin: 24px 0 0; display: grid; gap: 6px; }
+.loose .lc { margin: 0; display: flex; align-items: baseline; gap: 10px; font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+.loose .lc b { font-family: var(--display); font-weight: 700; font-size: 38px; line-height: 1; letter-spacing: -0.03em; color: var(--sig-edge); font-variant-numeric: tabular-nums; transition: color .5s; }
+.order.done .loose .lc b { color: var(--lilac); }
+.loose .cap { margin: 0; min-height: 2.9em; max-width: 36ch; font-size: 15.5px; line-height: 1.45; color: var(--text-2); }
+.loose .cap .c1 { display: none; }
+.order.done .loose .cap .c0 { display: none; } .order.done .loose .cap .c1 { display: inline; color: var(--text); animation: capin .5s var(--ease); }
+@keyframes capin { from { opacity: 0; translate: 0 4px; } }
+.order .jus .stmt { margin-top: 30px; }
+
+/* round 15 · the hero starts as the mark: it stands between where the J and the T will be (its bars on the letters'
+   cap height: 64.8 mark units = .70em), then comes apart into the word (herofield.js); the words and buttons under
+   the word arrive meanwhile, so nothing waits for the whole entrance */
+.xm { display: none; }
+.js [data-mark] { position: relative; }
+.js [data-ignite] [data-mark] .ch { opacity: 0; }
+.js [data-mark] .xm { display: block; position: absolute; z-index: 2; left: .386em; top: -.178em; width: 1.08em; height: 1.08em; overflow: visible; pointer-events: none; }
+.xm .xt { fill: #f1edf7; transform-box: fill-box; transform-origin: center; }
+.xm .pj path { fill: oklch(0.62 0.2 300); } .xm .pt path { fill: oklch(0.46 0.2 293); }
+.js .hero.early .rise { opacity: 1; transform: none; transition: opacity .7s var(--ease), transform .9s var(--ease); transition-delay: calc(500ms + var(--i, 0) * 120ms); }
+@media (prefers-reduced-motion: reduce) { .js [data-mark] .xm { display: none; } .js [data-ignite] [data-mark] .ch { opacity: 1 !important; } }

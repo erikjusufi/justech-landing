@@ -33,7 +33,10 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
 // each station in turn, the station lights, and its line appears. Demo: the invented tour company.
 {
   const sec = $('.built'), text = $('.btext', sec), list = $('.run ol', sec), runBox = $('.run', sec);
-  const region = mobile ? [0.07, 0.46, 0.9, 0.62] : [0.47, 0.11, 0.93, 0.48];
+  // on a phone the figure takes the space left between the words and the narrated run (round 15: measured, so they
+  // never meet); on a desktop it sits above the run, beside the words
+  const region = () => { if (!mobile) return [0.47, 0.11, 0.93, 0.48];
+    const H = sec.clientHeight, a = rel(text, sec), r = rel(runBox, sec); return [0.06, (a.y + a.h + 44) / H, 0.94, (r.y - 76) / H]; };
   const WHITE = '#fff', ORCHID = css('--sig-edge');
   let quiet = [], labels = [], dimAt = 0, fig = null, vis = false;
   const field = tfield($('canvas', sec), { cell: mobile ? 20 : 26, weight: 0.24, seed: [0.75, 0.3], mix: [0.72, 0.9], lit: 0, growMs: 700, ink: 'oklch(0.62 0.16 297 / .3)', glow: LILAC, tone: [0.4, 1],
@@ -41,7 +44,7 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
     mask: (x, y, t, now) => { const dim = dimAt ? 1 - 0.88 * Math.min(1, Math.max(0, now - dimAt) / 700) : 1; return t.shape ? 1 : (inside(t, quiet) ? 0.05 : 1) * dim * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 8); },
     pulses: { every: 1e9, max: 0, cap: 4, ms: 34, trail: 3.4, blur: 12 },
     onGrown(f) {
-      fig = figure(f, 'agentrun', box(f, region), { speed: 0.6 }); dimAt = performance.now() + (reduced ? -1e5 : 300);
+      fig = figure(f, 'agentrun', box(f, region()), { speed: 0.6 }); dimAt = performance.now() + (reduced ? -1e5 : 300);
       labels.forEach(l => l.remove()); labels = [];
       for (const s of fig.labels) { const t = f.at(s.i, s.j), el = document.createElement('span'); el.className = 'stn'; el.textContent = s.l;
         const off = f.cell * 0.9, [dx, dy] = [[0, -1], [1, 0], [0, 1], [-1, 0]][s.d];
@@ -95,38 +98,46 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
 
 // 4 · Jus (round 12): the field fills the panel, loose, quiet behind the words and the cards. As the panel comes into
 // view it falls into one weave (every arm meeting another) from the lilac dot outward; as the order reaches each card,
+// (round 15: first the field is shown as it is, loose, every arm that meets nothing marked as a loose end and counted;
+// after a beat the order comes, the count falls to none and the caption turns from how systems usually grow to ours)
 // a signal runs to it along the weave and the card shows its fact: what the figure rests on, the zero struck out.
 // Then signals keep leaving the dot, slowly: once everything joins, light can go anywhere.
 {
-  const sec = $('.order'), meter = $('.meter b', sec), dot = $('.jus .dot', sec), cards = [...sec.querySelectorAll('.pc')];
+  const sec = $('.order'), meter = $('.loose .lc b', sec), dot = $('.jus .dot', sec), cards = [...sec.querySelectorAll('.pc')];
   const ord = t => ((t.i + t.j) % 2 ? 2 : 0);
   const rect = el => { const b = el.getBoundingClientRect(), o = sec.getBoundingClientRect(); return { x: b.left - o.left, y: b.top - o.top, w: b.width, h: b.height }; };
   const d0 = rect(dot), o0 = sec.getBoundingClientRect();
   const from = [d0.x + d0.w / 2, d0.y + d0.h * 0.78], out = () => [d0.x + d0.w + field.cell * 0.9, from[1]]; // the order spreads from the dot; light leaves beside it
   // quiet behind each line of the words (not the whole block, so the field reaches in beside the short lines), the cards, the meter
   const lines = el => { const g = document.createRange(); g.selectNodeContents(el); const o = sec.getBoundingClientRect(); return [...g.getClientRects()].map(b => ({ x: b.left - o.left, y: b.top - o.top, w: b.width, h: b.height })); };
-  const quiet = () => [...[...sec.querySelectorAll('.jus > *')].flatMap(lines).map(r => pad(r, 16)), ...cards.map(c => pad(rect(c), 10)), pad(rect(meter.parentNode), 8)];
+  const quiet = () => [...[...sec.querySelectorAll('.jus > *')].flatMap(lines).map(r => pad(r, 16)), ...cards.map(c => pad(rect(c), 10))];
   let rs = quiet(); addEventListener('resize', () => { rs = quiet(); });
   const pulses = { every: 1500, max: 0, cap: 4, ms: 70, trail: 3.2, blur: 12, from: f => ({ tile: f.tileAt(...out()), color: LILAC }) };
   const field = tfield($('canvas', sec), { cell: mobile ? 32 : 40, weight: 0.22, seed: [from[0] / o0.width, from[1] / o0.height], mix: [1, 1], ink: 'oklch(0.6 0.17 297 / .4)', glow: LILAC, lit: 0, growMs: 900, pulses,
     mask: (x, y, t) => (t && inside(t, rs) ? 0.07 : 1) * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 7),
     onLayout(f) { rs = quiet(); f.tiles.forEach(t => { t.th = t.rnd; }); },
     after(ctx, now, f) {
-      // the figure: the share of arms, in view and out in the open, that meet a neighbour's arm
-      let all = 0, met = 0; const D = [[0, -1], [1, 0], [0, 1], [-1, 0]], open = t => t.cx < f.W && t.cy < f.H && !inside(t, rs);
+      // the loose ends: every arm, in view and out in the open, that meets no neighbour's arm, marked and counted
+      let all = 0, met = 0; const bar = f.cell * 0.22, fade = looseAt ? Math.min(1, (now - looseAt) / 500) : 0, beat = 0.7 + 0.3 * Math.sin(now / 180);
+      ctx.save(); ctx.fillStyle = SIG.edge; ctx.shadowColor = SIG.edge; ctx.shadowBlur = 8; const D = [[0, -1], [1, 0], [0, 1], [-1, 0]], open = t => t.cx < f.W && t.cy < f.H && !inside(t, rs);
       for (const t of f.tiles) { if (!open(t)) continue; const r = Math.round(t.shown);
         for (const a of [0, 1, 3]) { const dir = (a + ((r % 4) + 4)) % 4, ni = t.i + D[dir][0], nj = t.j + D[dir][1]; if (ni < 0 || nj < 0 || ni >= f.cols) continue; const n = f.tiles[nj * f.cols + ni]; if (!n || !open(n)) continue; all++;
-          const nr = Math.round(n.shown); if ([0, 1, 3].map(b => (b + ((nr % 4) + 4)) % 4).includes((dir + 2) % 4)) met++; } }
-      const v = `${Math.round((100 * met) / Math.max(1, all))} %`; if (meter.textContent !== v) meter.textContent = v;
+          const nr = Math.round(n.shown); if ([0, 1, 3].map(b => (b + ((nr % 4) + 4)) % 4).includes((dir + 2) % 4)) met++;
+          else if (fade) { ctx.globalAlpha = fade * beat; const x = t.cx + D[dir][0] * f.cell * 0.46, y = t.cy + D[dir][1] * f.cell * 0.46; ctx.fillRect(x - bar * 0.45, y - bar * 0.45, bar * 0.9, bar * 0.9); } } }
+      ctx.restore();
+      const v = String(all - met); if (meter.textContent !== v) meter.textContent = v;
+      if (ordering && all === met) sec.classList.add('done');
+      return fade > 0 && all > met; // keep the loose ends beating
     } });
   // the shortest walk along joined arms (the weave, once ordered) from a tile to another
   const walk = (a, b) => { const prev = new Map([[a, null]]), q = [a];
     while (q.length) { const t = q.shift(); if (t === b) break; for (const n of field.joined(t)) if (!prev.has(n) && (n === b || !inside(n, rs))) { prev.set(n, t); q.push(n); } }
     if (!prev.has(b)) return null; const out = []; for (let t = b; t; t = prev.get(t)) out.unshift(t); return out; };
   const SPEED = 0.75; // px per ms: how fast the order spreads from the dot
+  let looseAt = 0, ordering = false;
   if (!reduced) sec.classList.add('armed');
   const order = () => {
-    sec.classList.add('lit');
+    ordering = true; sec.classList.add('lit');
     for (const t of field.tiles) field.set(t, ord(t), reduced ? 0 : 250 + Math.hypot(t.cx - from[0], t.cy - from[1]) / SPEED + t.th * 160, 0.75);
     const last = reduced ? 0 : 250 + Math.hypot(field.W, field.H) / SPEED + 400;
     cards.forEach(c => {
@@ -139,7 +150,10 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
     });
     setTimeout(() => { pulses.max = reduced ? 0 : 2; field.kick(); }, last);
   };
-  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { o.disconnect(); order(); } }, { threshold: 0.5 }).observe(sec);
+  // the field as it is first, its loose ends counted, then (once the visitor has had a moment with it) the order
+  new IntersectionObserver(([e], o) => { if (!e.isIntersecting) return; o.disconnect();
+    if (reduced) { order(); sec.classList.add('done'); return; }
+    looseAt = performance.now() + 500; field.kick(); setTimeout(order, 2300); }, { threshold: 0.55 }).observe(sec);
 }
 
 // 5 · the journey (round 11): the page settles on each of its parts (CSS scroll snapping, desktop only); each part
