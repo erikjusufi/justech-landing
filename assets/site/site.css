@@ -558,16 +558,20 @@ html.snapping { scroll-snap-type: y proximity; }
   .hnav .acts { display: none; }
   .mbar .where:empty { border: 0; }
   .msheet:not([hidden]) { gap: 2px; padding: 10px; }
-  .msheet .mhead { position: relative; height: 128px; margin-bottom: 8px; border-radius: 14px; overflow: hidden; isolation: isolate;
+  .msheet .mhead { position: relative; height: 72px; margin-bottom: 4px; border-radius: 14px; overflow: hidden; isolation: isolate;
     background: radial-gradient(80% 120% at 80% 0%, oklch(0.5 0.2 295 / .55), transparent 70%), rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px var(--ring); }
   .msheet .mhead canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
-  .msheet .mname { position: absolute; left: 16px; bottom: 14px; margin: 0; display: grid; gap: 2px; }
-  .msheet .mname span { font-family: var(--mono); font-size: 12px; color: var(--lilac); }
-  .msheet .mname b { font-family: var(--display); font-weight: 760; font-size: 32px; line-height: 1; letter-spacing: -0.035em; font-variation-settings: 'opsz' 96, 'wdth' 82; color: #fff; }
   .msheet .mclose { position: absolute; right: 10px; top: 10px; display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 12px; cursor: pointer;
     color: #fff; background: rgba(23,20,29,.6); box-shadow: inset 0 0 0 1px var(--ring); }
   .msheet .mclose svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
   .msheet .mk { margin: 12px 14px 4px; }
   .msheet .msign { justify-content: center; height: 50px; margin-top: 14px; font-size: 15.5px; }
 }
-@media (max-width: 1020px) { .hnav .mbtn { margin-left: auto; } .msheet .mname b { text-shadow: 0 2px 14px rgba(23,20,29,.9); } }
+
+/* round 17g: the menu without texts beyond its links, its visual small, the whole of it inside a small phone */
+@media (max-width: 1020px) {
+  .msheet .mi { padding: 10px 14px; font-size: 17px; }
+  .msheet .mk { margin: 8px 14px 2px; }
+  .msheet .msign { height: 48px; margin-top: 10px; }
+  .msheet .mclose { top: 50%; translate: 0 -50%; }
+}
