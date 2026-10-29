@@ -1,7 +1,7 @@
 // The contact page: the form, on the hero's field. Round 17: Send posts the form to /api/contact (a Cloudflare Pages
 // Function that mails it through Resend); if that cannot take it (not deployed, not configured, offline), Send falls
 // back to what it did before: the visitor's email app opens with the message written.
-import { heroField } from './herofield.js';
+import { heroField } from './herofield.js?v=314a36acd8b2';
 const $ = (s, r = document) => r.querySelector(s);
 const TO = 'info@justech.uk';
 await document.fonts.ready;

@@ -301,14 +301,16 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .ptext { max-width: 640px; } .pname { font-size: clamp(48px, 6vw, 92px); white-space: nowrap; }
 
 /* round 11 · the journey: the page settles on each part (desktop), parts rise in, a rail says where you are */
-@media (min-width: 900px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
-  html.snapping { scroll-snap-type: y proximity; }
-  .snapping .hero, .snapping .snap { scroll-snap-align: start; }
-  .snapping .snap-end { scroll-snap-align: end; }
-  .snapping .sec.snap { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0; box-sizing: border-box; }
-}
-.js .rv { opacity: 0; transform: translateY(28px); }
-.js .rv.in { opacity: 1; transform: none; transition: opacity .8s var(--ease), transform 1s var(--ease); }
+/* round 17d: snapping only where every part fits the screen (main.js decides and sets html.snapping), never under
+   reduced motion; then a part may fill the screen. Where one does not fit, no snapping, and parts are as tall as they are */
+html.snapping { scroll-snap-type: y proximity; }
+.snapping .hero, .snapping .snap { scroll-snap-align: start; }
+.snapping .snap-end { scroll-snap-align: end; }
+.snapping .sec.snap { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0; box-sizing: border-box; }
+/* round 17d: a part rises a little as it comes into view, but is never hidden: a render that does not scroll (a
+   full-page screenshot, a preview) shows everything */
+.js .rv { transform: translateY(28px); }
+.js .rv.in { transform: none; transition: transform 1s var(--ease); }
 .js .glass.rv.in { transition-delay: .12s; }
 .cue { position: absolute; z-index: 2; left: 50%; bottom: 22px; translate: -50% 0; display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 99px; font-size: 13.5px; color: rgba(255,255,255,.86);
   background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; transition: opacity .8s var(--ease) .9s; }
@@ -341,17 +343,17 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 /* round 11 · the agent at work: the loop carved in the upper right, the run narrated below it */
 .built { min-height: min(780px, calc(100svh - 80px)); }
 .built h2 { font-size: clamp(38px, 4vw, 60px); }
-.run { position: absolute; z-index: 1; right: clamp(20px, 3vw, 44px); bottom: clamp(20px, 3vw, 36px); width: min(560px, 46%); padding: 16px 18px; background-color: rgba(30,20,60,.35); }
-.run .rk { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 10px; font-family: var(--mono); font-size: 11.5px; color: var(--text-3); } .run .rk span:first-child { color: var(--lilac); }
-.run ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; min-height: 13.5em; }
-.run li { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; padding: 4px 8px; border-radius: 8px; font-size: 13.5px; line-height: 1.4; color: var(--text-2); opacity: 0; translate: 0 4px; transition: opacity .4s, translate .4s, background .3s; }
-.run li b { font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--text-3); padding-top: 1px; }
-.run li.shown { opacity: 1; translate: 0 0; } .run li.out { opacity: 0; }
-.run li.now { background: rgba(255,255,255,.07); color: #fff; } .run li.now b { color: var(--lilac); }
-.run li.no b, .run li.no.now b { color: var(--sig-edge); } .run li.ok b { color: var(--ok, #8fd4a4); }
+.arun { position: absolute; z-index: 1; right: clamp(20px, 3vw, 44px); bottom: clamp(20px, 3vw, 36px); width: min(560px, 46%); padding: 16px 18px; background-color: rgba(30,20,60,.35); }
+.arun .rk { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 10px; font-family: var(--mono); font-size: 11.5px; color: var(--text-3); } .arun .rk span:first-child { color: var(--lilac); }
+.arun ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; min-height: 13.5em; }
+.arun li { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; padding: 4px 8px; border-radius: 8px; font-size: 13.5px; line-height: 1.4; color: var(--text-2); opacity: 0; translate: 0 4px; transition: opacity .4s, translate .4s, background .3s; }
+.arun li b { font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--text-3); padding-top: 1px; }
+.arun li.shown { opacity: 1; translate: 0 0; } .arun li.out { opacity: 0; }
+.arun li.now { background: rgba(255,255,255,.07); color: #fff; } .arun li.now b { color: var(--lilac); }
+.arun li.no b, .arun li.no.now b { color: var(--sig-edge); } .arun li.ok b { color: var(--ok, #8fd4a4); }
 .built .slot { bottom: auto; top: auto; position: relative; left: auto; margin: 22px 0 0; display: inline-block; }
 @media (max-width: 760px) {
-  .built { min-height: 1240px; } .run { left: 14px; right: 14px; width: auto; bottom: 16px; } .run li { grid-template-columns: 1fr; gap: 0; } .run ol { min-height: 0; }
+  .built { min-height: 1240px; } .arun { left: 14px; right: 14px; width: auto; bottom: 16px; } .arun li { grid-template-columns: 1fr; gap: 0; } .arun ol { min-height: 0; }
   .built .stn { font-size: 11px; }
 }
 
@@ -417,16 +419,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
    foot, and the figure's labels ran into it) */
 @media (max-width: 760px) {
   .built { min-height: 0; padding-bottom: 14px; }
-  .run { position: relative; left: auto; right: auto; bottom: auto; width: auto; margin: 330px 14px 0; }
-}
-/* round 15 · phones settle too: at the start of each part, and inside the long parts at what we want seen (the JustApp
-   panel, the agent's figure with its run, the two Jus cards); between them the page scrolls freely (proximity) */
-@media (max-width: 899px) and (prefers-reduced-motion: no-preference) {
-  html.snapping { scroll-snap-type: y proximity; }
-  .snapping .hero, .snapping .snap, .snapping .glass.app, .snapping .run, .snapping .proof { scroll-snap-align: start; }
-  .snapping .snap, .snapping .glass.app, .snapping .proof { scroll-margin-top: 12px; }
-  .snapping .run { scroll-margin-top: 330px; }
-  .snapping .snap-end { scroll-snap-align: end; }
+  .arun { position: relative; left: auto; right: auto; bottom: auto; width: auto; margin: 330px 14px 0; }
 }
 /* round 15 · Jus: the loose ends, counted, under "We build things the right way."; the caption turns once none are left */
 .order .loose { margin: 24px 0 0; display: grid; gap: 6px; }
@@ -481,3 +474,33 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .nf .k { margin: 0 0 14px; font-family: var(--mono); font-size: 13px; color: var(--lilac); }
 .nf .lead { margin: 22px 0 0; max-width: 520px; font-size: 18px; line-height: 1.5; color: rgba(241,237,247,.86); }
 .nf .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+
+/* round 17d · the run is never an empty panel: the lines not yet played stand dimmed, and light up as the run reaches them */
+.js .arun li { opacity: .28; translate: none; }
+.js .arun li.shown { opacity: 1; } .js .arun li.out { opacity: .28; }
+/* round 17d · phones: easier to read (Erik: "teško je čitati sadržaj preko moba") */
+@media (max-width: 760px) {
+  .arun .rk { font-size: 12.5px; } .arun li { font-size: 15px; line-height: 1.45; } .arun li b { font-size: 12.5px; }
+  .built .stn { font-size: 12px; }
+  .pv .pk, .pv .src { font-size: 13px; } .pc p { font-size: 16.5px; }
+  .loose .lc { font-size: 14px; } .loose .cap { font-size: 16.5px; }
+  .order .jus .right { font-size: 19px; }
+}
+/* round 17d · Just App on a phone: what you tap and what it changes stay together. The left column opens into the
+   panel's flow (display: contents) so the screen comes straight under the tabs and the product's line; the small mark
+   is not drawn; "More about" and Sign in go to the end; the tabs stay at the top while you read the screen */
+@media (max-width: 760px) {
+  .glass.app { display: flex; flex-direction: column; gap: 0; }
+  .app .aleft { display: contents; }
+  .app .apphead { order: 1; } .app .tabs { order: 2; } .app .pline { order: 3; } .app .aright { order: 4; margin-top: 14px; }
+  .app .plinks { order: 5; margin-top: 22px; } .app .aleft > .btn { order: 6; align-self: flex-start; }
+  .app .gmark { display: none; }
+  .app .pline { min-height: 0; margin-top: 14px; font-size: 21px; }
+  .app .tabs { position: sticky; top: 8px; z-index: 5; }
+  .app .tablist { background: rgba(28,22,40,.82); box-shadow: 0 8px 24px -10px rgba(0,0,0,.6), inset 0 0 0 1px var(--ring); }
+}
+@media (max-width: 760px) {
+  .app .tabs { align-self: stretch; } .app .tablist { width: 100%; box-sizing: border-box; }
+  .app [role=tab] { white-space: nowrap; padding: 0 4px; font-size: 13.5px; }
+  .glass.app .aleft .plinks { display: grid; align-self: stretch; justify-items: start; justify-content: start; text-align: left; }
+}
