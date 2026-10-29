@@ -6,8 +6,8 @@
 // figure in small, its name and its line, Sign in in the panel's head; then Contact. It fits a small phone without
 // scrolling. Links resolve from the page's own Home link, so this works at any depth (and the 404 page). The footer's
 // field is drawn here too, as the one module every page shares.
-import { tfield, reduced } from '../system/tfield.js?v=f0625fc8fbf0';
-import { mark } from '../system/figures.js?v=f0625fc8fbf0';
+import { tfield, reduced } from '../system/tfield.js?v=1cd391dc2ca6';
+import { mark } from '../system/figures.js?v=1cd391dc2ca6';
 
 const nav = document.querySelector('.hnav');
 if (nav) {
@@ -79,8 +79,12 @@ if (nav) {
     root.classList.toggle('stuck', y > 8); nav.style.setProperty('--p', max > 0 ? Math.min(1, y / max).toFixed(4) : 0); };
   addEventListener('scroll', () => { if (!tick) tick = requestAnimationFrame(onScroll); }, { passive: true }); onScroll();
   // on the landing, the part you are in (the rail knows it): beside the nav's links, and in the menu's head
+  let shown = null;
   if (rail) new MutationObserver(() => { const a = rail.querySelector('a[aria-current]'), name = a ? a.textContent.replace(/^\d+ · /, '') : '';
     part.textContent = name; part.classList.toggle('on', !!name); if (landing) mname.textContent = name || where;
+    // a cue as a new part begins: the progress line beats once (round 20)
+    if (name && name !== shown && shown !== null && !reduced) { nav.classList.remove('beat'); void nav.offsetWidth; nav.classList.add('beat'); }
+    shown = name;
   }).observe(rail, { subtree: true, attributes: true, attributeFilter: ['aria-current'] });
 }
 

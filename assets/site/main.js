@@ -1,12 +1,12 @@
 // JusTech landing, round 10 (round 12: Jus rebuilt; round 11: the hero shared with the contact page, the web half fits one screen, the
 // agent narrated, the page snaps to its parts): the hero, then the two halves of the offer (on the web, with JusT App; AI and custom),
 // then Jus. Round 10 keeps the T-field where it means something: the hero, the agent, the ordering.
-import './mnav.js?v=f0625fc8fbf0'; // round 17e: the small navigation on phones
-import { tfield, reduced } from '../system/tfield.js?v=f0625fc8fbf0';
-import { ignite, rel, wait } from '../system/ignite.js?v=f0625fc8fbf0';
-import { mark, figure, box } from '../system/figures.js?v=f0625fc8fbf0';
-import { showcase } from '../shared/showcase.js?v=f0625fc8fbf0';
-import { heroField } from './herofield.js?v=f0625fc8fbf0';
+import './mnav.js?v=1cd391dc2ca6'; // round 17e: the small navigation on phones
+import { tfield, reduced } from '../system/tfield.js?v=1cd391dc2ca6';
+import { ignite, rel, wait } from '../system/ignite.js?v=1cd391dc2ca6';
+import { mark, figure, box } from '../system/figures.js?v=1cd391dc2ca6';
+import { showcase } from '../shared/showcase.js?v=1cd391dc2ca6';
+import { heroField } from './herofield.js?v=1cd391dc2ca6';
 const $ = (s, r = document) => r.querySelector(s);
 const mobile = matchMedia('(max-width: 760px)').matches;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -131,7 +131,7 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
   const from = [d0.x + d0.w / 2, d0.y + d0.h * 0.78], out = () => [d0.x + d0.w + field.cell * 0.9, from[1]]; // the order spreads from the dot; light leaves beside it
   // quiet behind each line of the words (not the whole block, so the field reaches in beside the short lines), the cards, the meter
   const lines = el => { const g = document.createRange(); g.selectNodeContents(el); const o = sec.getBoundingClientRect(); return [...g.getClientRects()].map(b => ({ x: b.left - o.left, y: b.top - o.top, w: b.width, h: b.height })); };
-  const quiet = () => [...[...sec.querySelectorAll('.jus > *')].flatMap(lines).map(r => pad(r, 16)), ...cards.map(c => pad(rect(c), 10))];
+  const quiet = () => [...[...sec.querySelectorAll('.jus > *, .end')].flatMap(lines).map(r => pad(r, 16)), ...cards.map(c => pad(rect(c), 10))];
   let rs = quiet(); addEventListener('resize', () => { rs = quiet(); });
   const pulses = { every: 1500, max: 0, cap: 4, ms: 70, trail: 3.2, blur: 12, from: f => ({ tile: f.tileAt(...out()), color: LILAC }) };
   const field = tfield($('canvas', sec), { cell: mobile ? 32 : 40, weight: 0.22, seed: [from[0] / o0.width, from[1] / o0.height], mix: [1, 1], ink: 'oklch(0.6 0.17 297 / .4)', glow: LILAC, lit: 0, growMs: 900, pulses,
