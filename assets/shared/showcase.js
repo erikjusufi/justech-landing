@@ -1,6 +1,6 @@
 // The products showcase: three tabs, one moment each. Plays when it comes into view, advances on its own every
 // 8 s until a visitor chooses a tab, and never moves under prefers-reduced-motion. Arrow keys move between tabs.
-import { mount, play } from './screens.js?v=314a36acd8b2';
+import { mount, play } from './screens.js?v=4d634567e024';
 export function showcase(root, { onChange } = {}) {
   const tabs = [...root.querySelectorAll('[role=tab]')], lines = [...root.querySelectorAll('[data-line]')];
   const stage = mount(root.querySelector('[data-stage]'));

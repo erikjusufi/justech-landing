@@ -1,5 +1,6 @@
 // The 404 page (round 17): the hero's field, as on the contact page; the T of "This" lights and the field grows
-import { heroField } from './herofield.js?v=314a36acd8b2';
+import './mnav.js?v=4d634567e024'; // round 17e: the small navigation on phones
+import { heroField } from './herofield.js?v=4d634567e024';
 const $ = (s, r = document) => r.querySelector(s);
 await document.fonts.ready;
 const box = $('.ctop');
