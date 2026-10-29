@@ -16,9 +16,9 @@ security headers and caching (fonts for a year, CSS and JS for an hour), `404.ht
 and:
 
 - `POST /api/contact`: the contact form, mailed through Resend from the `notify.justech.uk` domain (EU, eu-west-1),
-  Reply-To the visitor. Environment: `RESEND_API_KEY` (a secret) and `CONTACT_TO` (the inbox), both required;
-  `CONTACT_FROM` optional (default `JusTech <hello@notify.justech.uk>`). Until both are set it answers 503 and the
-  form opens the visitor's email app instead.
+  Reply-To the visitor, to info@justech.uk. Environment: `RESEND_API_KEY` (a secret; required); `CONTACT_TO`
+  (default info@justech.uk) and `CONTACT_FROM` (default `JusTech <hello@notify.justech.uk>`) optional. Until the key
+  is set it answers 503 and the form opens the visitor's email app instead.
 - `POST /api/e`: JustInsight's same-origin proxy to `insight.justech.uk/ingest`, with `X-JT-IP` and `X-JT-Country`
   from Cloudflare's `CF-Connecting-IP` and `CF-IPCountry`. `jt.js` is the tracker, byte for byte. The pages carry its
   tag once the site's key from JustApp Admin is put in `insight.json` beside `build.py` and the site is rebuilt.

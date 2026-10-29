@@ -1,7 +1,7 @@
 # justech.uk on Coolify (erik-main, behind Cloudflare): the static site and its two endpoints in one small Node
 # process with no dependencies (server/server.mjs). Coolify: build pack Dockerfile, port 8080 (fixed here: the server
-# ignores a generic PORT); environment RESEND_API_KEY (a secret) and CONTACT_TO (until both are set, the form opens the
-# visitor's email app), CONTACT_FROM optional.
+# ignores a generic PORT); environment RESEND_API_KEY (a secret; until it is set, the form opens the visitor's email
+# app), CONTACT_TO (default info@justech.uk) and CONTACT_FROM optional.
 FROM node:22-alpine
 WORKDIR /srv
 COPY . /srv/site

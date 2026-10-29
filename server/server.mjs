@@ -1,9 +1,9 @@
 // The justech.uk server (round 17b): one small Node process, no dependencies, in its own Coolify app on erik-main
 // behind Cloudflare. It serves the static site with its headers and caching and a 404 page, and two endpoints:
-//   POST /api/contact  the contact form, mailed through Resend: RESEND_API_KEY and CONTACT_TO (the inbox) required,
-//                      CONTACT_FROM optional (default JusTech <hello@notify.justech.uk>, the notify.justech.uk domain in
-//                      Resend, EU). Reply-To is the visitor. Until both are set it answers 503 and the page opens the
-//                      visitor's email app instead.
+//   POST /api/contact  the contact form, mailed through Resend: RESEND_API_KEY required; CONTACT_TO (default
+//                      info@justech.uk, Erik's inbox) and CONTACT_FROM (default JusTech <hello@notify.justech.uk>, the
+//                      notify.justech.uk domain in Resend, EU) optional. Reply-To is the visitor. Until the key is set it
+//                      answers 503 and the page opens the visitor's email app instead.
 //   POST /api/e        JustInsight's same-origin proxy (justech-analytics INGEST-CONTRACT §5, ARCHITECTURE §1): the
 //                      beacon goes to the collector with the visitor's address and country as X-JT-IP and
 //                      X-JT-Country, from Cloudflare's CF-Connecting-IP and CF-IPCountry; always 204.
@@ -46,8 +46,8 @@ async function contact(req, res) {
   if (clean(d.website, 200)) return json(res, 200); // the field only bots fill: thank them and drop it
   const f = Object.fromEntries(Object.entries(MAX).map(([k, n]) => [k, clean(d[k], n)]));
   if (!f.name || !f.message || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(f.email)) return json(res, 422, 'fields');
-  const key = process.env.RESEND_API_KEY, to = process.env.CONTACT_TO;
-  if (!key || !to) return json(res, 503, 'not configured');
+  const key = process.env.RESEND_API_KEY, to = process.env.CONTACT_TO || 'info@justech.uk';
+  if (!key) return json(res, 503, 'not configured');
   const text = `${f.topic || 'Enquiry'}\n\n${f.message}\n\n${f.name}${f.company ? `, ${f.company}` : ''}\n${f.email}\n\nSent from the form on justech.uk`;
   try {
     const r = await fetch(RESEND, { method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(10000),
