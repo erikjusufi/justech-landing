@@ -1,0 +1,31 @@
+/* JusTech design system: the tokens. Everything a page or a product screen needs to look like JusTech, in one file.
+   Fonts are SIL OFL and self-hosted (licences beside the files); nothing loads from a third party.
+   Ground: violet-grey (Erik's pick, round 8). `data-ground="black"` keeps round 7's black for comparison. */
+@font-face { font-family: 'Geist'; src: url(fonts/Geist-Variable.woff2) format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Geist Mono'; src: url(fonts/GeistMono-Variable.woff2) format('woff2'); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: 'Bricolage Grotesque'; src: url(fonts/BricolageGrotesque-Variable.woff2) format('woff2'); font-weight: 200 800; font-stretch: 75% 100%; font-display: swap; }
+
+:root {
+  /* ground: three steps of violet-grey, the page, a panel, a raised panel */
+  --bg: #17141d; --bg-2: #1f1b27; --bg-3: #29243298;
+  /* text on the ground */
+  --text: #f1edf7; --text-2: #b3abc2; --text-3: #8a8299;
+  /* the violet field (hero, close), its depth, the network's ink, and lilac: the light */
+  --violet: oklch(0.46 0.2 293); --violet-hi: oklch(0.56 0.21 296); --violet-deep: oklch(0.30 0.15 292);
+  --violet-mid: oklch(0.62 0.17 298); --lilac: oklch(0.85 0.09 300); --lilac-hot: oklch(0.86 0.1 300);
+  /* signal colours: light that moves. Lilac is the T's, white the hubs', orchid comes in from outside */
+  --sig-t: oklch(0.86 0.1 300); --sig-hub: #fff; --sig-edge: oklch(0.8 0.14 322);
+  --ring: rgba(241,237,247,.09); --ring-2: rgba(241,237,247,.3);
+  --ok: oklch(0.76 0.16 150); --warn: oklch(0.82 0.14 78);
+  /* type: Bricolage for display (heavy, narrowed), Geist and Geist Mono for everything else */
+  --display: 'Bricolage Grotesque', Geist, sans-serif; --sans: Geist, system-ui, sans-serif; --mono: 'Geist Mono', ui-monospace, monospace;
+  --display-axes: 'opsz' 96, 'wdth' 82;
+  /* shape and space */
+  --r-1: 10px; --r-2: 16px; --r-3: 28px; --r-pill: 99px; --pad: clamp(16px, 4vw, 56px);
+  /* motion: one ease for arriving things, one for things that fall */
+  --ease: cubic-bezier(.16, 1, .3, 1); --fall: cubic-bezier(.5, 0, .9, .6);
+  /* glass: a panel over the field */
+  --glass-bg: rgba(30,24,42,.62); --glass-blur: blur(22px) saturate(1.4);
+  --glass-shadow: 0 0 0 1px rgba(241,237,247,.1), inset 0 1px 0 rgba(255,255,255,.1), 0 1px 2px rgba(0,0,0,.4), 0 24px 48px -16px rgba(0,0,0,.7), 0 60px 120px -40px rgba(20,0,60,.6);
+}
+[data-ground=black] { --bg: #09070d; --bg-2: #110e17; --bg-3: #1a1622; --text-3: #7d7590; }
