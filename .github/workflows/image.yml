@@ -1,0 +1,41 @@
+# Never a Dockerfile nobody ran: on every PR and on main, build the image, run it as Coolify does, wait for its own
+# health check, and run server/check.sh against it. On failure, the container's logs and health log are printed.
+name: image
+on:
+  pull_request:
+  push:
+    branches: [main]
+concurrency:
+  group: image-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image
+        run: docker build -t justech-site .
+      - name: Run it (as Coolify does, with its predefined variables)
+        run: docker run -d --name site -p 8080:8080 -e HOST=0.0.0.0 -e PORT=8080 -e COOLIFY_FQDN=justech.uk justech-site
+      - name: Wait for the image's own health check
+        run: |
+          for i in $(seq 1 45); do
+            running=$(docker inspect -f '{{.State.Running}}' site); health=$(docker inspect -f '{{.State.Health.Status}}' site)
+            echo "$i running=$running health=$health"
+            [ "$health" = healthy ] && exit 0
+            [ "$running" = false ] && { echo "the container exited"; exit 1; }
+            sleep 2
+          done
+          echo "not healthy after 90 s"; exit 1
+      - name: The health check from inside, as Coolify runs it
+        run: docker exec site wget -qO- http://127.0.0.1:8080/healthz
+      - name: The site's checks
+        run: sh server/check.sh http://127.0.0.1:8080 503
+      - name: On failure, the container's logs and health log
+        if: failure()
+        run: |
+          docker ps -a
+          docker logs site || true
+          docker inspect -f '{{json .State.Health}}' site || true
+          docker exec site sh -c 'id; ls -la /srv /srv/site | head -40; env | sort' || true
