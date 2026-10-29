@@ -1,24 +1,25 @@
-// The small navigation for phones and narrow screens (round 17e, Erik: "a small navbar through the whole site, so the
-// other pages are easy to reach"), shared by every page. Below 1020px the page's own nav keeps the mark and a Menu
-// button; once that nav has scrolled away, a slim bar comes down with the mark, where you are, and the same Menu.
-// Round 17f (Erik): no Talk to us beside Menu. Round 18 (Erik): the menu opens on the T field sending pulses and
-// nothing else; Home first; Just App's three products grouped on a lighter panel, each with its own figure in small
-// beside its name and its line, and Sign in in the panel's head, since it signs in to Just App; then Talk to us. The
-// whole menu fits a small phone without scrolling. Links resolve from the page's own Home link, so this works at any
-// depth (and the 404 page). The footer's field (round 18) is drawn here too, as the one module every page shares.
-import { tfield, reduced } from '../system/tfield.js?v=dad1a7d7aa81';
-import { mark } from '../system/figures.js?v=dad1a7d7aa81';
+// The site's navigation, shared by every page. Round 19 (Erik): the page's own nav follows the scroll at every width
+// instead of a second bar coming down on phones: over the hero it is the hero's nav; once the page moves it becomes a
+// glass bar in the page's frame (on wide screens with the part you are in and a line for how far down you are). Below
+// 1020px it keeps the mark and Menu (top right). The menu opens on where you are (the page, and on the landing the
+// part) over the T field sending pulses; then Home; Just App's three products on one lighter panel, each with its
+// figure in small, its name and its line, Sign in in the panel's head; then Contact. It fits a small phone without
+// scrolling. Links resolve from the page's own Home link, so this works at any depth (and the 404 page). The footer's
+// field is drawn here too, as the one module every page shares.
+import { tfield, reduced } from '../system/tfield.js?v=56738ba881b3';
+import { mark } from '../system/figures.js?v=56738ba881b3';
 
 const nav = document.querySelector('.hnav');
 if (nav) {
   const home = new URL(nav.querySelector('.brand').getAttribute('href'), location.href), at = p => new URL(p, home).href;
   const page = location.href.split(/[?#]/)[0].replace(/index\.html$/, '');
   const cur = href => href === page ? ' aria-current="page"' : '';
-  const PRODUCTS = [['insight', 'Just Insight', 'What happened on your site, and why, in plain words.'],
-    ['content', 'Just Content', 'Change your site yourself, in its own look, without breaking it.'],
-    ['ops', 'Just Ops', 'Your site up, renewed and backed up, checked every night.']];
+  const PRODUCTS = [['insight', 'JusT Insight', 'What happened on your site, and why, in plain words.'],
+    ['content', 'JusT Content', 'Change your site yourself, in its own look, without breaking it.'],
+    ['ops', 'JusT Ops', 'Your site up, renewed and backed up, checked every night.']];
   const prod = PRODUCTS.find(([p]) => at(`${p}/`) === page);
-  const where = prod ? prod[1] : page === at('./') ? 'JusTech' : page === at('contact/') ? 'Talk to us' : document.title.split(' · ')[0];
+  const landing = page === at('./');
+  const where = prod ? prod[1] : landing ? 'Home' : page === at('contact/') ? 'Talk to us' : document.title.split(' · ')[0];
   const icon = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M3 10h14M3 14h14"/></svg>';
   const mark0 = nav.querySelector('.brand svg')?.outerHTML.replace('#mark-on-violet', '#mark') || '';
 
@@ -28,35 +29,32 @@ if (nav) {
   open.innerHTML = `${icon}<span class="sr">Menu</span>`;
   nav.append(open);
 
-  // the bar that comes down once the page's nav is gone
-  const bar = document.createElement('div');
-  bar.className = 'mbar'; bar.setAttribute('aria-hidden', 'true');
-  bar.innerHTML = `<a class="brand" href="${at('./')}" tabindex="-1">${mark0}<span>JusTech</span></a><span class="where">${page === at('./') ? '' : where}</span>
-    <button class="mbtn" type="button" aria-controls="menu" aria-expanded="false" tabindex="-1">${icon}<span class="sr">Menu</span></button>`;
-
   // the menu
   const menu = document.createElement('nav');
   menu.className = 'msheet'; menu.id = 'menu'; menu.setAttribute('aria-label', 'Menu'); menu.hidden = true;
+  const HOME = '<svg viewBox="0 0 20 20"><path d="M3.5 9 10 3.5 16.5 9v7.5h-4.5v-5h-4v5H3.5z"/></svg>';
+  const TALK = '<svg viewBox="0 0 20 20"><path d="M3.5 4.5h13v9h-7l-4 3v-3h-2z"/></svg>';
   const go = '<svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg>';
-  menu.innerHTML = `<div class="mhead"><canvas aria-hidden="true"></canvas>
+  menu.innerHTML = `<div class="mhead"><canvas aria-hidden="true"></canvas><p class="mname"><span>${prod ? 'Just App' : 'JusTech'}</span><b>${where}</b></p>
       <button class="mclose" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg><span class="sr">Close the menu</span></button></div>
-    <a class="mi" href="${at('./')}"${cur(at('./'))}>Home</a>
+    <a class="mi" href="${at('./')}"${cur(at('./'))}><i aria-hidden="true">${HOME}</i>Home</a>
     <div class="mapp" role="group" aria-labelledby="mapp-k"><p class="mapph"><span id="mapp-k">Just App</span><a class="msign" href="https://app.justech.uk">Sign in ${go}</a></p>
       ${PRODUCTS.map(([p, n, l]) => `<a class="mp" href="${at(`${p}/`)}"${cur(at(`${p}/`))}><canvas data-prod="${p}" aria-hidden="true"></canvas><span><b>${n}</b>${l}</span></a>`).join('')}</div>
-    <a class="mi" href="${at('contact/')}"${cur(at('contact/'))}>Talk to us</a>`;
+    <p class="mk">Contact</p>
+    <a class="mi" href="${at('contact/')}"${cur(at('contact/'))}><i aria-hidden="true">${TALK}</i>Talk to us</a>`;
   const shade = document.createElement('div'); shade.className = 'mshade'; shade.hidden = true;
-  document.body.append(bar, shade, menu);
+  document.body.append(shade, menu);
 
   // the T visuals, made the first time the menu opens (their canvases have a size only then); they draw only while shown
   let viz = null;
   const visual = () => {
     if (viz) return; const c = menu.querySelector('.mhead canvas');
     viz = tfield(c, { cell: 14, weight: 0.27, hubs: 3, seed: [0.4, 0.5], mix: [0.66, 0.84], ink: 'oklch(0.64 0.17 298 / .5)', glow: 'oklch(0.85 0.12 300)', lit: 0.01, growMs: 600,
-      mask: x => Math.min(1, Math.max(0, (0.86 - x) * 4)), pulses: reduced ? null : { every: 520, max: 4, len: [6, 14], ms: 60, trail: 2.6 } });
+      mask: x => Math.max(0, Math.min(1, (x - 0.3) * 3, (0.9 - x) * 5)), pulses: reduced ? null : { every: 520, max: 4, len: [6, 14], ms: 60, trail: 2.6 } });
     menu.querySelectorAll('.mp canvas').forEach(el => mark(el, el.dataset.prod, { cell: 4, speed: 0.6 }));
   };
 
-  const buttons = [open, bar.querySelector('.mbtn')];
+  const buttons = [open];
   let last = null;
   const set = on => {
     menu.hidden = shade.hidden = !on; document.documentElement.classList.toggle('menu-open', on);
@@ -69,12 +67,21 @@ if (nav) {
   menu.addEventListener('click', e => { if (e.target.closest('a')) set(false); });
   addEventListener('keydown', e => { if (e.key === 'Escape' && !menu.hidden) set(false); });
 
-  // the bar shows while the page's nav is off screen
-  new IntersectionObserver(([e]) => {
-    const show = !e.isIntersecting;
-    bar.classList.toggle('on', show); bar.setAttribute('aria-hidden', String(!show));
-    bar.querySelectorAll('a, button').forEach(el => el.tabIndex = show ? 0 : -1);
-  }).observe(nav);
+  // the nav follows the page: it leaves the hero for the body (it is fixed from the first paint, so nothing moves; out
+  // of the hero's stacking it stays above the parts), and turns into the glass bar once the page has moved
+  document.body.prepend(nav);
+  const root = document.documentElement, rail = document.querySelector('.rail');
+  const part = document.createElement('span'); part.className = 'npart'; part.setAttribute('aria-hidden', 'true');
+  nav.querySelector('.acts')?.before(part);
+  const mname = menu.querySelector('.mname b');
+  let tick = 0;
+  const onScroll = () => { tick = 0; const y = scrollY, max = root.scrollHeight - innerHeight;
+    root.classList.toggle('stuck', y > 8); nav.style.setProperty('--p', max > 0 ? Math.min(1, y / max).toFixed(4) : 0); };
+  addEventListener('scroll', () => { if (!tick) tick = requestAnimationFrame(onScroll); }, { passive: true }); onScroll();
+  // on the landing, the part you are in (the rail knows it): beside the nav's links, and in the menu's head
+  if (rail) new MutationObserver(() => { const a = rail.querySelector('a[aria-current]'), name = a ? a.textContent.replace(/^\d+ · /, '') : '';
+    part.textContent = name; part.classList.toggle('on', !!name); if (landing) mname.textContent = name || where;
+  }).observe(rail, { subtree: true, attributes: true, attributeFilter: ['aria-current'] });
 }
 
 // the footer's field: faint, still until it is seen, then pulses running (none under reduced motion)

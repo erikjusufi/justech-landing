@@ -7,10 +7,10 @@
 //   Agentrun: an agent at work (round 11). A request comes in to the agent, which goes up to your data, your
 //            systems and the model in turn, is checked against your rules, goes round again when it is not right
 //            yet, and answers. The page sends the signal step by step and narrates it.
-//   Ops:     the loop that runs every night. Four stations on one circuit (up, renewed, backed up, checked), and
-//            jobs going round it, lighting each station as they pass.
+//   Ops:     checked every night (round 19). A steady pulse, a beat a night, tonight's in white; under tonight's beat
+//            its checks (up, renewed, backed up, checked) hang down as branches, as the Ops screen lists them.
 // `g` is the grid box the figure fills: { i0, i1, j0, j1 } in cells. Shapes are drawn from demo ideas, not data.
-import { tfield, reduced } from './tfield.js?v=dad1a7d7aa81';
+import { tfield, reduced } from './tfield.js?v=56738ba881b3';
 const LILAC = 'oklch(0.86 0.1 300)', WHITE = '#f6f2fb', DIM = 'oklch(0.7 0.13 298 / .7)', ORCHID = 'oklch(0.8 0.14 322)';
 const span = (a, b) => { const o = []; for (let k = a; a <= b ? k <= b : k >= b; k += a <= b ? 1 : -1) o.push(k); return o; };
 
@@ -72,16 +72,35 @@ export const FIGURES = {
     if (img && rows.length > 3) routes.splice(3, 0, { part: parts.length - 1, color: ORCHID, ms: 50 });
     return { parts, routes, seed: margin[0] };
   },
+  // round 19 (Erik: the loop was much weaker than Insight's line and Content's page): a steady pulse, one beat a night,
+  // tonight's in white; from tonight's beat the night's checks hang down, one branch each (up, renewed, backed up,
+  // checked), as on the Ops screen. Small, it is still a pulse with a comb under its last beat
   ops({ i0, i1, j0, j1 }) {
-    const loop = [...span(i0, i1).map(i => [i, j0]), ...span(j0 + 1, j1).map(j => [i1, j]), ...span(i1 - 1, i0).map(i => [i, j1]), ...span(j1 - 1, j0).map(j => [i0, j])];
-    const mi = Math.round((i0 + i1) / 2), mj = Math.round((j0 + j1) / 2);
-    const st = [[mi, j0, 'up', 0], [i1, mj, 'renewed', 1], [mi, j1, 'backed up', 2], [i0, mj, 'checked', 3]];
-    const out = new Map(st.map(([i, j, , d]) => [`${i},${j}`, d]));
-    const closed = [...loop, loop[0]];
+    const n = i1 - i0, h = j1 - j0, jb = j0 + Math.max(3, Math.min(Math.round(h * 0.4), h - 10)), jd = Math.min(j1, jb + Math.max(1, Math.round(h * 0.06)));
+    const xt = i1 - Math.max(5, Math.round(n * 0.16)), p = Math.max(5, Math.round(n / 5.5));
+    const H = (a, b, j) => span(a, b).map(i => [i, j]), V = (i, a, b) => span(a, b).map(j => [i, j]);
+    // a beat as a heart monitor draws it, on the grid: a small rise, the spike up, down past the line, back
+    const ja = jb - Math.max(1, Math.round((jb - j0) * 0.18)), jt = j0 + Math.round((jb - j0) * 0.15);
+    const beat = x => [...V(x, jb, ja), ...V(x + 1, ja, jb), ...V(x + 2, jb, jt), ...V(x + 3, jt, jd), ...V(x + 4, jd, jb)];
+    const xs = []; for (let x = i0 + Math.max(2, Math.round(p * 0.5)); x + 4 < xt - 2; x += p) xs.push(x);
+    const past = []; let at = i0;
+    for (const x of xs) { past.push(...H(at, x - 1, jb), ...beat(x)); at = x + 5; }
+    past.push(...H(at, xt - 1, jb));
+    const tonight = [...beat(xt), ...H(xt + 5, i1, jb)];
+    const k = Math.max(0, Math.min(4, Math.floor((j1 - jd - 1) / 2))), rows = k ? span(1, k).map(r => jd + 1 + Math.round(r * (j1 - jd - 1) / k)) : [], L = Math.max(2, Math.round(n * 0.12));
+    const spine = k ? V(xt + 3, jd + 1, rows[k - 1]) : [], branches = rows.map(j => H(xt + 3, xt + 3 - L, j).slice(1));
+    const words = ['up', 'renewed', 'backed up', 'checked'], whole = [...past, ...tonight];
+    const parts = [{ cells: past, ink: LILAC, straight: 'I', step: 12, delay: 0 }, { cells: tonight, ink: WHITE, straight: 'I', step: 26, delay: past.length * 12 },
+      ...(k ? [{ cells: spine, ink: DIM, straight: 'I', step: 30, delay: past.length * 12 + 200 }] : []),
+      ...branches.map((c, r) => ({ cells: c, ink: ORCHID, straight: 'I', step: 30, delay: past.length * 12 + 260 + r * 160 })), { cells: whole }];
+    const P = parts.length - 1;
     return {
-      parts: [{ cells: closed, ink: LILAC, straight: 'I', stem: t => out.get(`${t.i},${t.j}`) ?? null, step: 16, delay: 0 }],
-      routes: [{ part: 0, color: '#fff', ms: 44 }, { part: 0, color: LILAC, ms: 52 }, { part: 0, color: ORCHID, ms: 40 }],
-      stations: st.map(([i, j]) => [i, j]), labels: st.map(([i, j, l, d]) => ({ i, j, l, d })), seed: loop[0], loop: true,
+      parts,
+      routes: [{ part: P, color: '#fff', ms: 30 }, ...(k ? [{ part: 2, color: ORCHID, ms: 60 }] : []), { part: P, color: LILAC, ms: 34 }, ...branches.map((_, r) => ({ part: 3 + r, color: '#fff', ms: 80 }))],
+      stations: [...xs.map(x => [x + 2, jt]), [xt + 2, jt], ...rows.map(j => [xt + 3 - L, j])],
+      // the checks are named only when all four fit
+      labels: [{ i: xt + 2, j: jt, l: 'tonight', d: 0 }, ...(k === 4 ? rows.map((j, r) => ({ i: xt + 3 - L, j, l: words[r], d: 3 })) : [])],
+      seed: whole[0],
     };
   },
 };
