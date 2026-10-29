@@ -2,12 +2,12 @@
 // instead of a second bar coming down on phones: over the hero it is the hero's nav; once the page moves it becomes a
 // glass bar in the page's frame (on wide screens with the part you are in and a line for how far down you are). Below
 // 1020px it keeps the mark and Menu (top right). The menu opens on where you are (the page, and on the landing the
-// part) over the T field sending pulses; then Home; Just App's three products on one lighter panel, each with its
+// part) over the T field sending pulses; then Home; JusT App's three products on one lighter panel, each with its
 // figure in small, its name and its line, Sign in in the panel's head; then Contact. It fits a small phone without
 // scrolling. Links resolve from the page's own Home link, so this works at any depth (and the 404 page). The footer's
 // field is drawn here too, as the one module every page shares.
-import { tfield, reduced } from '../system/tfield.js?v=5bd48d052298';
-import { mark } from '../system/figures.js?v=5bd48d052298';
+import { tfield, reduced } from '../system/tfield.js?v=f0625fc8fbf0';
+import { mark } from '../system/figures.js?v=f0625fc8fbf0';
 
 const nav = document.querySelector('.hnav');
 if (nav) {
@@ -35,10 +35,10 @@ if (nav) {
   const HOME = '<svg viewBox="0 0 20 20"><path d="M3.5 9 10 3.5 16.5 9v7.5h-4.5v-5h-4v5H3.5z"/></svg>';
   const TALK = '<svg viewBox="0 0 20 20"><path d="M3.5 4.5h13v9h-7l-4 3v-3h-2z"/></svg>';
   const go = '<svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg>';
-  menu.innerHTML = `<div class="mhead"><canvas aria-hidden="true"></canvas><p class="mname"><span>${prod ? 'Just App' : 'JusTech'}</span><b>${where}</b></p>
+  menu.innerHTML = `<div class="mhead"><canvas aria-hidden="true"></canvas><p class="mname"><span>${prod ? 'JusT App' : 'JusTech'}</span><b>${where}</b></p>
       <button class="mclose" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg><span class="sr">Close the menu</span></button></div>
     <a class="mi" href="${at('./')}"${cur(at('./'))}><i aria-hidden="true">${HOME}</i>Home</a>
-    <div class="mapp" role="group" aria-labelledby="mapp-k"><p class="mapph"><span id="mapp-k">Just App</span><a class="msign" href="https://app.justech.uk">Sign in ${go}</a></p>
+    <div class="mapp" role="group" aria-labelledby="mapp-k"><p class="mapph"><span id="mapp-k">JusT App</span><a class="msign" href="https://app.justech.uk">Sign in ${go}</a></p>
       ${PRODUCTS.map(([p, n, l]) => `<a class="mp" href="${at(`${p}/`)}"${cur(at(`${p}/`))}><canvas data-prod="${p}" aria-hidden="true"></canvas><span><b>${n}</b>${l}</span></a>`).join('')}</div>
     <p class="mk">Contact</p>
     <a class="mi" href="${at('contact/')}"${cur(at('contact/'))}><i aria-hidden="true">${TALK}</i>Talk to us</a>`;
