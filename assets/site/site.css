@@ -467,3 +467,17 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 @media (prefers-reduced-motion: reduce) { .js [data-ignite] [data-mark] .ch { transform: none !important; } .js [data-mark] .xm { display: none; } }
 /* round 16b · JustApp's placeholder mark (the small t) removed until JustApp is branded: the places it sat close up */
 .suite .sl { padding-left: 8px; } .ofapp { padding-left: 12px; }
+
+/* round 17 · the form posts; a field only bots fill; the thank-you that takes the form's place */
+.cform .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.cform button:disabled { opacity: .7; cursor: progress; }
+.cform.sent { align-content: start; }
+.cform.sent h2 { margin: 0; font-family: var(--display); font-weight: 760; font-size: clamp(34px, 4vw, 52px); letter-spacing: -0.04em; font-variation-settings: 'opsz' 96, 'wdth' 82; }
+.cform.sent p { margin: 0; color: rgba(241,237,247,.86); font-size: 17px; line-height: 1.5; } .cform.sent b { color: #fff; font-weight: 500; }
+.cform.sent:focus { outline: none; }
+.cform[hidden] { display: none; }
+/* round 17 · the 404 page */
+.nf .cin { grid-template-columns: minmax(0, 860px); }
+.nf .k { margin: 0 0 14px; font-family: var(--mono); font-size: 13px; color: var(--lilac); }
+.nf .lead { margin: 22px 0 0; max-width: 520px; font-size: 18px; line-height: 1.5; color: rgba(241,237,247,.86); }
+.nf .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }

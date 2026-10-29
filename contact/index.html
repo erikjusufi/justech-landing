@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Talk to us · JusTech</title>
 <meta name="description" content="Tell us what you’re building.">
+<link rel="canonical" href="https://justech.uk/contact/">
+<meta name="theme-color" content="#17141d">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="JusTech">
+<meta property="og:title" content="Talk to us · JusTech">
+<meta property="og:description" content="Tell us what you’re building.">
+<meta property="og:url" content="https://justech.uk/contact/">
+<meta property="og:image" content="https://justech.uk/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="JusTech. Technology is all we do.">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
 <link rel="preload" href="../assets/system/fonts/BricolageGrotesque-Variable.woff2" as="font" type="font/woff2" crossorigin>
@@ -38,9 +50,11 @@
         <label><input type="radio" name="topic" value="A custom application"><span>A custom application</span></label>
         <label><input type="radio" name="topic" value="Something else"><span>Something else</span></label></fieldset>
       <label><span>What are you building?</span><textarea name="what" rows="5" required></textarea></label>
+      <label class="hp" aria-hidden="true">Website <input name="website" tabindex="-1" autocomplete="off"></label>
       <div class="send"><button class="btn b-light" type="submit" id="talk">Send <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
-        <p class="note" id="note">Opens your email app with the message ready. Or write to <a href="mailto:info@justech.uk">info@justech.uk</a>.</p></div>
+        <p class="note" id="note" aria-live="polite">Or write to <a href="mailto:info@justech.uk">info@justech.uk</a>.</p></div>
     </form>
+    <div class="cform glass-panel sent" id="sent" hidden tabindex="-1"><h2>Thank you.</h2><p>Your message is with us. We will answer at <b id="sent-to"></b>.</p></div>
   </div>
   <i class="drop" aria-hidden="true"></i>
 </header>
