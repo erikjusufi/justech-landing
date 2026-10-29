@@ -1,12 +1,12 @@
 // JusTech landing, round 10 (round 12: Jus rebuilt; round 11: the hero shared with the contact page, the web half fits one screen, the
 // agent narrated, the page snaps to its parts): the hero, then the two halves of the offer (on the web, with Just App; AI and custom),
 // then Jus. Round 10 keeps the T-field where it means something: the hero, the agent, the ordering.
-import './mnav.js?v=4d634567e024'; // round 17e: the small navigation on phones
-import { tfield, reduced } from '../system/tfield.js?v=4d634567e024';
-import { ignite, rel, wait } from '../system/ignite.js?v=4d634567e024';
-import { mark, figure, box } from '../system/figures.js?v=4d634567e024';
-import { showcase } from '../shared/showcase.js?v=4d634567e024';
-import { heroField } from './herofield.js?v=4d634567e024';
+import './mnav.js?v=a362645bda47'; // round 17e: the small navigation on phones
+import { tfield, reduced } from '../system/tfield.js?v=a362645bda47';
+import { ignite, rel, wait } from '../system/ignite.js?v=a362645bda47';
+import { mark, figure, box } from '../system/figures.js?v=a362645bda47';
+import { showcase } from '../shared/showcase.js?v=a362645bda47';
+import { heroField } from './herofield.js?v=a362645bda47';
 const $ = (s, r = document) => r.querySelector(s);
 const mobile = matchMedia('(max-width: 760px)').matches;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -26,7 +26,7 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
 {
   const sec = $('.glass');
   const m = mark($('.gmark canvas', sec), 'insight', { cell: mobile ? 8 : 10, speed: 0.58, area: mobile ? [0.18, 0.1, 0.82, 0.9] : [0.3, 0.1, 0.7, 0.9] });
-  showcase(sec, { onChange(name) { m.play(name); } });
+  showcase(sec, { onChange(name) { m.play(name); }, auto: !mobile }); // round 17f: on a phone the visitor turns it
 }
 
 // 3 · AI and custom: an agent at work. Round 11: the field carves an agent's loop (your data, your systems, the
@@ -98,10 +98,12 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
   let running = false;
   async function run() {
     if (running) return; running = true;
-    if (reduced) { list.replaceChildren(...steps(fig.geo).map(line)); list.querySelectorAll('li').forEach(l => l.classList.add('shown')); return; }
+    if (reduced) return; // the run stands written out in full
+    const lis = [...list.children]; // the same lines every round, only dimmed and lit (round 17f: no longer replaced, which made them all blink)
     for (;;) {
       await until(); while (!fig) await wait(200); const S = steps(fig.geo); // fresh each round: the figure may have been carved again
-      list.replaceChildren(...S.map(line)); const lis = [...list.children];
+      lis.forEach(l => l.classList.remove('shown', 'now', 'out'));
+      await wait(600);
       for (let k = 0; k < S.length; k++) {
         await until();
         lis.forEach(l => l.classList.remove('now')); lis[k].classList.add('shown', 'now');

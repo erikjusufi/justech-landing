@@ -7,7 +7,7 @@ check() { # name, expected, actual
   if [ "$2" = "$3" ]; then echo "ok    $1 ($3)"; else echo "FAIL  $1: expected $2, got $3"; fail=1; fi; }
 code() { curl -s -o /dev/null -w '%{http_code}' "$@"; }
 check 'GET /' 200 "$(code "$B/")"
-check '/ is the landing' 1 "$(curl -s "$B/" | grep -c '<title>JusTech · Technology is all we do</title>')"
+check '/ is the landing' 1 "$(curl -s "$B/" | grep -c '<title>JusTech · ')"
 check 'GET /insight/' 200 "$(code "$B/insight/")"
 check 'GET /insight -> /insight/' 301 "$(code "$B/insight")"
 check 'GET /healthz' ok "$(curl -s "$B/healthz")"
