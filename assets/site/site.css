@@ -213,7 +213,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .foot .copy { flex-basis: 100%; }
 @media (max-width: 760px) { .ctop { margin: 0; border-radius: 0 0 26px 26px; } .ctop .cin { grid-template-columns: 1fr; padding-top: 10px; } }
 
-/* round 10 · Just App: the three products as one suite, lightly branded. Its sign is the t of Just, lit, in glass */
+/* round 10 · JusT App: the three products as one suite, lightly branded. Its sign is the t of Just, lit, in glass */
 .appmark { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 7px; font: normal 760 17px/1 var(--display); font-variation-settings: 'opsz' 96, 'wdth' 82;
   color: var(--lilac); background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2), inset 0 1px 0 rgba(255,255,255,.25); padding-bottom: 2px; }
 .appmark.lg { width: 64px; height: 64px; border-radius: 18px; font-size: 50px; padding-bottom: 5px; text-shadow: 0 0 22px oklch(0.8 0.15 300 / .7);
@@ -486,7 +486,7 @@ html.snapping { scroll-snap-type: y proximity; }
   .loose .lc { font-size: 14px; } .loose .cap { font-size: 16.5px; }
   .order .jus .right { font-size: 19px; }
 }
-/* round 17d · Just App on a phone: what you tap and what it changes stay together. The left column opens into the
+/* round 17d · JusT App on a phone: what you tap and what it changes stay together. The left column opens into the
    panel's flow (display: contents) so the screen comes straight under the tabs and the product's line; the small mark
    is not drawn; "More about" and Sign in go to the end; the tabs stay at the top while you read the screen */
 @media (max-width: 760px) {
@@ -522,7 +522,7 @@ html.snapping { scroll-snap-type: y proximity; }
   .msheet .mp b { font-weight: 600; } .msheet .mp span { font-size: 14px; font-weight: 400; color: var(--text-2); line-height: 1.4; }
 }
 @media (prefers-reduced-motion: reduce) { .msheet { animation: none !important; } }
-/* round 17e · Just App on a phone: the product's mark comes back (Erik), small, between the tabs and the product's line */
+/* round 17e · JusT App on a phone: the product's mark comes back (Erik), small, between the tabs and the product's line */
 @media (max-width: 760px) {
   .app .gmark { display: flex; order: 3; margin-top: 12px; } .app .gmark canvas { height: 84px; }
   .app .pline { order: 4; } .app .aright { order: 5; } .app .aleft > .btn { order: 6; margin-top: 22px; }
@@ -554,7 +554,7 @@ html.snapping { scroll-snap-type: y proximity; }
   .msheet .mclose svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
 }
 
-/* round 18 · the menu: the field sending pulses on top and nothing else; Home; Just App as one lighter panel, each
+/* round 18 · the menu: the field sending pulses on top and nothing else; Home; JusT App as one lighter panel, each
    product with its figure in small, its name and its line, Sign in in the panel's head; Talk to us. Fits 320×568 */
 @media (max-width: 1020px) {
   .msheet .mhead { height: 96px; margin-bottom: 6px; }
@@ -577,7 +577,7 @@ html.snapping { scroll-snap-type: y proximity; }
 
 /* round 18 · one frame for the whole page (Erik, on a 2K screen: the parts were of different widths, with too much
    room between them). Every panel, the hero's included, is the same width, at most 1600px, centred with the same edge;
-   what stands outside a panel (the head of On the web, Just App) lines up with the text inside one. The parts no
+   what stands outside a panel (the head of On the web, JusT App) lines up with the text inside one. The parts no
    longer stretch to a full screen when snapping; one even gap stands between them instead. */
 :root { --edge: clamp(12px, 1.4vw, 28px); --frame: min(1600px, 100% - 2 * var(--edge)); --gap: clamp(48px, 7vh, 88px); }
 @media (min-width: 761px) {
@@ -589,7 +589,7 @@ html.snapping { scroll-snap-type: y proximity; }
 .sec { padding-top: var(--gap); } .snapping .sec.snap { padding: var(--gap) 0 0; }
 .snapping .sec.snap { min-height: 0; justify-content: flex-start; }
 
-/* round 18 · the footer, a panel like the rest of the page: the mark and the year; Home and Talk to us; Just App as
+/* round 18 · the footer, a panel like the rest of the page: the mark and the year; Home and Talk to us; JusT App as
    the lighter group the menu has, Sign in in its head. Its field runs faintly (mnav.js) */
 .foot { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(280px, 380px); gap: 28px clamp(28px, 5vw, 80px); align-items: start;
   margin-top: var(--gap); padding: clamp(28px, 4vw, 48px) var(--pad); border: 0; border-radius: var(--r-3) var(--r-3) 0 0; color: var(--text-2); font-size: 15px; }
@@ -661,20 +661,19 @@ html.snapping { scroll-snap-type: y proximity; }
 
 /* round 19 · Jus. says, quietly, that it is Latin: a kicker like the other parts' numbers, as a dictionary has it */
 
-/* round 20 · Jus.Tech: the name read as its two words, each glossed under its half (jūs, Latin: right, law; technē, Greek:
-   craft, skill), then what we do with it. The two rows share columns, so each gloss sits under its own word at every width;
-   Tech comes up to full white when the order is done */
-.order .jus .ety { display: inline-grid; grid-template-columns: auto auto; column-gap: .04em; }
+/* round 20 · Jus.Tech: the name on one line, each word glossed under itself on one line, in the serif italic of a
+   dictionary (jūs, Latin; technē, Greek). The two rows share columns, so each gloss starts under its own word at every
+   width; Tech comes up to full white when the order is done */
+.order .jus .ety { display: inline-grid; grid-template-columns: auto auto; }
 .order .jus .ety h2, .order .jus .ety .gl { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; }
 .order .jus h2 { font-size: clamp(64px, 8.6vw, 150px); }
 .order .jus h2 .tech { color: var(--text-2); transition: color .9s var(--ease); }
 .order.done .jus h2 .tech { color: var(--text); }
-.order .jus .gl { margin: 14px 0 0; font-family: var(--mono); font-size: 12.5px; line-height: 1.5; letter-spacing: .02em; color: var(--text-3); }
-.order .jus .gl span { padding: 8px 14px 0 0; border-top: 1px solid var(--ring); }
-.order .jus .gl span + span { padding-left: 2px; }
-.order .jus .gl i { font-style: italic; color: var(--lilac); margin-right: 4px; }
-.order .jus .right { margin-top: 26px; }
+.order .jus .gl { margin: 10px 0 0; font-family: var(--serif); font-style: italic; font-size: clamp(15px, 1.35vw, 21px); line-height: 1.2; color: var(--text-3); white-space: nowrap; }
+.order .jus .gl span { padding-right: 12px; }
+.order .jus .gl i { color: var(--lilac); margin-right: .25em; }
+.order .jus .right { margin-top: 24px; }
 @media (max-width: 760px) {
   .order .jus h2 { font-size: clamp(54px, 17.5vw, 100px); }
-  .order .jus .gl { font-size: 11.5px; }
+  .order .jus .gl { font-size: clamp(13px, 4vw, 16px); }
 }
