@@ -541,3 +541,33 @@ html.snapping { scroll-snap-type: y proximity; }
   #web { margin: 28px 12px 0; padding: 30px 0 22px; border-radius: 22px; background: var(--bg-2); box-shadow: 0 0 0 1px var(--ring); }
   #web .glass.app { background: transparent; }
 }
+
+/* round 17f · nothing moves on its own: the tabs' names never wrap (they did, and the row grew when one was chosen);
+   on a phone the three screens share one height (each in the same grid cell, the hidden ones only invisible), so
+   choosing a tab no longer moves the page under it; the product's line keeps its room */
+.app [role=tab] { white-space: nowrap; padding: 0 8px; }
+@media (max-width: 760px) {
+  .app .stage { display: grid; }
+  .app .stage > .moment { display: flex !important; flex-direction: column; grid-area: 1 / 1; visibility: hidden; }
+  .app .stage > .moment.active { visibility: visible; }
+  .app .pline { min-height: 2.4em; }
+}
+
+/* round 17f · the menu opens on where you are, over a T visual in a loop; no Talk to us beside Menu */
+@media (max-width: 1020px) {
+  .hnav .acts { display: none; }
+  .mbar .where:empty { border: 0; }
+  .msheet:not([hidden]) { gap: 2px; padding: 10px; }
+  .msheet .mhead { position: relative; height: 128px; margin-bottom: 8px; border-radius: 14px; overflow: hidden; isolation: isolate;
+    background: radial-gradient(80% 120% at 80% 0%, oklch(0.5 0.2 295 / .55), transparent 70%), rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px var(--ring); }
+  .msheet .mhead canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .msheet .mname { position: absolute; left: 16px; bottom: 14px; margin: 0; display: grid; gap: 2px; }
+  .msheet .mname span { font-family: var(--mono); font-size: 12px; color: var(--lilac); }
+  .msheet .mname b { font-family: var(--display); font-weight: 760; font-size: 32px; line-height: 1; letter-spacing: -0.035em; font-variation-settings: 'opsz' 96, 'wdth' 82; color: #fff; }
+  .msheet .mclose { position: absolute; right: 10px; top: 10px; display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 12px; cursor: pointer;
+    color: #fff; background: rgba(23,20,29,.6); box-shadow: inset 0 0 0 1px var(--ring); }
+  .msheet .mclose svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
+  .msheet .mk { margin: 12px 14px 4px; }
+  .msheet .msign { justify-content: center; height: 50px; margin-top: 14px; font-size: 15.5px; }
+}
+@media (max-width: 1020px) { .hnav .mbtn { margin-left: auto; } .msheet .mname b { text-shadow: 0 2px 14px rgba(23,20,29,.9); } }
