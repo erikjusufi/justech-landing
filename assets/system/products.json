@@ -1,0 +1,63 @@
+{
+  "products": [
+    {
+      "key": "insight",
+      "name": "JusT Insight",
+      "word": "Insight",
+      "line": "What happened on your site, and why, in plain words.",
+      "points": [
+        [
+          "One sentence first",
+          "Every page opens on what happened, in plain words, before any chart."
+        ],
+        [
+          "Every figure shows what it rests on",
+          "Its period, what it is compared with, and where it comes from, one tap away."
+        ],
+        [
+          "Not measured is not zero",
+          "What is not set up or not measured yet says so, instead of showing a zero."
+        ]
+      ],
+      "page": "/insight/"
+    },
+    {
+      "key": "content",
+      "name": "JusT Content",
+      "word": "Content",
+      "line": "Change your site yourself, in its own look, without breaking it.",
+      "points": [
+        [
+          "In your site’s own look",
+          "You change the real pages, in the styles your site already has."
+        ],
+        [
+          "Locked, not broken",
+          "What your site’s design does not allow is locked, so a change cannot break it."
+        ]
+      ],
+      "page": "/content/"
+    },
+    {
+      "key": "ops",
+      "name": "JusT Ops",
+      "word": "Ops",
+      "line": "Your site up, renewed and backed up, checked every night.",
+      "points": [
+        [
+          "Checked every night",
+          "Every night: is the site up, is its certificate renewed, how old is its backup."
+        ],
+        [
+          "Renewed before it runs out",
+          "The certificate is renewed before it expires, not after."
+        ],
+        [
+          "Backed up",
+          "A recent backup, and its age, on the console."
+        ]
+      ],
+      "page": "/ops/"
+    }
+  ]
+}
