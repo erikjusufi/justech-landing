@@ -450,3 +450,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .xm .pj path { fill: oklch(0.62 0.2 300); } .xm .pt path { fill: oklch(0.46 0.2 293); }
 .js .hero.early .rise { opacity: 1; transform: none; transition: opacity .7s var(--ease), transform .9s var(--ease); transition-delay: calc(500ms + var(--i, 0) * 120ms); }
 @media (prefers-reduced-motion: reduce) { .js [data-mark] .xm { display: none; } .js [data-ignite] [data-mark] .ch { opacity: 1 !important; } }
+
+/* round 16 · the mark is made of the word's own J and T (no swap at the end): the T whole from the start, its stem a
+   mark-gap right of the J's, so its left arm passes behind the J, on the light tile in the mark's colours; the pair
+   stands between their places in the word (--sx, in em) and comes apart to them */
+.js [data-mark] { isolation: isolate; }
+.js [data-mark] .xm { display: block; position: absolute; z-index: 0; left: .386em; top: -.139em; width: 1.08em; height: 1.08em; border-radius: .2376em; background: #f1edf7; box-shadow: 0 .03em .1em rgba(20,10,50,.35); pointer-events: none; }
+.js [data-ignite] [data-mark] .ch { position: relative; z-index: 1; }
+.js [data-ignite] [data-mark] .ch.mj, .js [data-ignite] [data-mark] .ch.T { opacity: 1; transform: translateX(var(--sx)); }
+.js [data-ignite] [data-mark] .ch.mj { z-index: 2; transition: color .35s ease; }
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-ignite] [data-mark].m0 .ch.mj { color: oklch(0.62 0.2 300); }
+  .js [data-ignite] [data-mark].m0 .T { color: oklch(0.46 0.2 293); }
+}
+.measure [data-mark] .ch { transform: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) { .js [data-ignite] [data-mark] .ch { transform: none !important; } .js [data-mark] .xm { display: none; } }
