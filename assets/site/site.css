@@ -465,3 +465,5 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 }
 .measure [data-mark] .ch { transform: none !important; transition: none !important; }
 @media (prefers-reduced-motion: reduce) { .js [data-ignite] [data-mark] .ch { transform: none !important; } .js [data-mark] .xm { display: none; } }
+/* round 16b · JustApp's placeholder mark (the small t) removed until JustApp is branded: the places it sat close up */
+.suite .sl { padding-left: 8px; } .ofapp { padding-left: 12px; }
