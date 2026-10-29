@@ -1,11 +1,11 @@
 // JusTech landing, round 10 (round 12: Jus rebuilt; round 11: the hero shared with the contact page, the web half fits one screen, the
-// agent narrated, the page snaps to its parts): the hero, then the two halves of the offer (on the web, with JustApp; AI and custom),
+// agent narrated, the page snaps to its parts): the hero, then the two halves of the offer (on the web, with Just App; AI and custom),
 // then Jus. Round 10 keeps the T-field where it means something: the hero, the agent, the ordering.
-import { tfield, reduced } from '../system/tfield.js';
-import { ignite, rel, wait } from '../system/ignite.js';
-import { mark, figure, box } from '../system/figures.js';
-import { showcase } from '../shared/showcase.js';
-import { heroField } from './herofield.js';
+import { tfield, reduced } from '../system/tfield.js?v=314a36acd8b2';
+import { ignite, rel, wait } from '../system/ignite.js?v=314a36acd8b2';
+import { mark, figure, box } from '../system/figures.js?v=314a36acd8b2';
+import { showcase } from '../shared/showcase.js?v=314a36acd8b2';
+import { heroField } from './herofield.js?v=314a36acd8b2';
 const $ = (s, r = document) => r.querySelector(s);
 const mobile = matchMedia('(max-width: 760px)').matches;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -20,7 +20,7 @@ await document.fonts.ready;
 heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'), $('#hero .hnav')] });
 
 
-// 2 · JustApp in glass: the chosen product's sign drawn above its line as the tabs change. Round 10: no field behind
+// 2 · Just App in glass: the chosen product's sign drawn above its line as the tabs change. Round 10: no field behind
 // the glass any more, only the violet pool
 {
   const sec = $('.glass');
@@ -32,18 +32,40 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
 // model, your rules, and the way round again), and one run is narrated step by step beside it: the signal goes to
 // each station in turn, the station lights, and its line appears. Demo: the invented tour company.
 {
-  const sec = $('.built'), text = $('.btext', sec), list = $('.run ol', sec), runBox = $('.run', sec);
-  // on a phone the figure takes the space left between the words and the narrated run (round 15: measured, so they
-  // never meet); on a desktop it sits above the run, beside the words
-  const region = () => { if (!mobile) return [0.47, 0.11, 0.93, 0.48];
-    const H = sec.clientHeight, a = rel(text, sec), r = rel(runBox, sec); return [0.06, (a.y + a.h + 44) / H, 0.94, (r.y - 76) / H]; };
+  const sec = $('.built'), text = $('.btext', sec), list = $('.arun ol', sec), runBox = $('.arun', sec);
   const WHITE = '#fff', ORCHID = css('--sig-edge');
+  // the run: each station, what happened there, and the colour of its signal
+  const TEXT = [
+    { s: 'A request', t: '“Which tours next week are under half full?”', c: WHITE },
+    { s: 'Your data', t: 'Reads next week’s bookings: 14 tours, 3 under half full.', c: LILAC },
+    { s: 'Your systems', t: 'Finds 212 past guests who booked tours like them.', c: LILAC },
+    { s: 'The model', t: 'Drafts an offer for them: 20 % off.', c: WHITE },
+    { s: 'Your rules', t: 'Offers stop at 15 %. Not right yet.', c: ORCHID, no: true },
+    { s: 'Again', t: 'The model redrafts it at 10 %.', c: ORCHID },
+    { s: 'Your rules', t: 'Within your rules.', c: WHITE, ok: true },
+    { s: 'An answer', t: 'Three tours, one offer to 212 guests. Waiting for your yes.', c: WHITE },
+  ];
+  const line = x => { const li = document.createElement('li'); if (x.no) li.className = 'no'; if (x.ok) li.className = 'ok'; li.innerHTML = `<b>${x.s}</b><span>${x.t}</span>`; return li; };
+  // until it plays, the run stands written out in full, so the panel is never empty (a render that does not scroll);
+  // written before the field measures the part, so the part does not grow under it afterwards
+  list.replaceChildren(...TEXT.map(line)); list.querySelectorAll('li').forEach(l => l.classList.add('shown'));
+  // the figure takes the space left above the narrated run, with room for its labels (measured, so they never meet:
+  // round 15 on a phone, between the words and the run; round 17d on a desktop too, beside the words, where at 1280×720
+  // the fixed share put the loop's label on the run's header)
+  const region = () => { const H = sec.clientHeight, r = rel(runBox, sec);
+    if (!mobile) return [0.47, Math.max(0.1, 72 / H), 0.93, (r.y - 66) / H];
+    const a = rel(text, sec); return [0.06, (a.y + a.h + 44) / H, 0.94, (r.y - 76) / H]; };
   let quiet = [], labels = [], dimAt = 0, fig = null, vis = false;
+  let grown = false;
   const field = tfield($('canvas', sec), { cell: mobile ? 20 : 26, weight: 0.24, seed: [0.75, 0.3], mix: [0.72, 0.9], lit: 0, growMs: 700, ink: 'oklch(0.62 0.16 297 / .3)', glow: LILAC, tone: [0.4, 1],
     onLayout() { quiet = [pad(rel(text, sec), 18), pad(rel(runBox, sec), 12)]; },
     mask: (x, y, t, now) => { const dim = dimAt ? 1 - 0.88 * Math.min(1, Math.max(0, now - dimAt) / 700) : 1; return t.shape ? 1 : (inside(t, quiet) ? 0.05 : 1) * dim * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 8); },
     pulses: { every: 1e9, max: 0, cap: 4, ms: 34, trail: 3.4, blur: 12 },
-    onGrown(f) {
+    onGrown() { grown = true; fig = null; carve(); }, // after a re-layout (the part changed size) the figure is carved afresh
+    after() { for (const l of labels) l.classList.toggle('on', l._t.heat > 0.45); return false; } });
+  // the field grows as the part comes in; the figure is carved from it, and the run plays, once the figure is on screen
+  function carve() {
+      if (!grown || !vis || fig) return; const f = field;
       fig = figure(f, 'agentrun', box(f, region()), { speed: 0.6 }); dimAt = performance.now() + (reduced ? -1e5 : 300);
       labels.forEach(l => l.remove()); labels = [];
       for (const s of fig.labels) { const t = f.at(s.i, s.j), el = document.createElement('span'); el.className = 'stn'; el.textContent = s.l;
@@ -54,9 +76,11 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
         const r = el.getBoundingClientRect(), bb = sec.getBoundingClientRect(), push = Math.max(0, bb.left + 10 - r.left) - Math.max(0, r.right - (bb.right - 10));
         if (push) el.style.left = `${parseFloat(el.style.left) + push}px`; }
       run();
-    },
-    after() { for (const l of labels) l.classList.toggle('on', l._t.heat > 0.45); return false; } });
-  new IntersectionObserver(([e]) => { vis = e.isIntersecting; }, { threshold: 0.3 }).observe(sec);
+  }
+  // round 17d: the figure is carved, and the run plays, only once it is on the screen: on a phone, when the run
+  // under it comes onto the screen (before, it all played while the part had only begun to show)
+  const watch = mobile ? runBox : sec, opts = mobile ? { threshold: 0 } : { threshold: 0.4 };
+  new IntersectionObserver(([e]) => { vis = e.isIntersecting; carve(); }, opts).observe(watch);
 
   // one run, step by step: where the signal goes, what the station is, and what happened there
   const steps = g => {
@@ -64,24 +88,18 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
     const H = (a, b, j) => span(a, b).map(i => [i, j]), V = (i, a, b) => span(a, b).map(j => [i, j]);
     const up = k => V(xs[k], jm - 1, tops[k]), down = k => V(xs[k], tops[k], jm), along = (a, b) => H(a, b, jm);
     return [
-      { p: along(i0, xa), s: 'A request', t: '“Which tours next week are under half full?”', c: WHITE },
-      { p: [...along(xa, xs[0]), ...up(0)], s: 'Your data', t: 'Reads next week’s bookings: 14 tours, 3 under half full.', c: LILAC },
-      { p: [...down(0), ...along(xs[0] + 1, xs[1]), ...up(1)], s: 'Your systems', t: 'Finds 212 past guests who booked tours like them.', c: LILAC },
-      { p: [...down(1), ...along(xs[1] + 1, xs[2]), ...up(2)], s: 'The model', t: 'Drafts an offer for them: 20 % off.', c: WHITE },
-      { p: [...down(2), ...along(xs[2] + 1, xc)], s: 'Your rules', t: 'Offers stop at 15 %. Not right yet.', c: ORCHID, no: true },
-      { p: [...V(xc, jm + 1, j1), ...H(xc - 1, xa, j1), ...V(xa, j1 - 1, jm), ...along(xa + 1, xs[2]), ...up(2)], s: 'Again', t: 'The model redrafts it at 10 %.', c: ORCHID },
-      { p: [...down(2), ...along(xs[2] + 1, xc)], s: 'Your rules', t: 'Within your rules.', c: WHITE, ok: true },
-      { p: along(xc, i1), s: 'An answer', t: 'Three tours, one offer to 212 guests. Waiting for your yes.', c: WHITE },
-    ].map(x => ({ ...x, p: at(x.p) }));
+      along(i0, xa), [...along(xa, xs[0]), ...up(0)], [...down(0), ...along(xs[0] + 1, xs[1]), ...up(1)], [...down(1), ...along(xs[1] + 1, xs[2]), ...up(2)],
+      [...down(2), ...along(xs[2] + 1, xc)], [...V(xc, jm + 1, j1), ...H(xc - 1, xa, j1), ...V(xa, j1 - 1, jm), ...along(xa + 1, xs[2]), ...up(2)],
+      [...down(2), ...along(xs[2] + 1, xc)], along(xc, i1),
+    ].map((path, k) => ({ ...TEXT[k], p: at(path) }));
   };
-  const line = x => { const li = document.createElement('li'); if (x.no) li.className = 'no'; if (x.ok) li.className = 'ok'; li.innerHTML = `<b>${x.s}</b><span>${x.t}</span>`; return li; };
   const until = () => new Promise(f => { const k = () => (vis ? f() : setTimeout(k, 300)); k(); });
   let running = false;
   async function run() {
     if (running) return; running = true;
-    const S = steps(fig.geo);
-    if (reduced) { list.replaceChildren(...S.map(line)); list.querySelectorAll('li').forEach(l => l.classList.add('shown')); return; }
+    if (reduced) { list.replaceChildren(...steps(fig.geo).map(line)); list.querySelectorAll('li').forEach(l => l.classList.add('shown')); return; }
     for (;;) {
+      await until(); while (!fig) await wait(200); const S = steps(fig.geo); // fresh each round: the figure may have been carved again
       list.replaceChildren(...S.map(line)); const lis = [...list.children];
       for (let k = 0; k < S.length; k++) {
         await until();
@@ -156,7 +174,7 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
     looseAt = performance.now() + 500; field.kick(); setTimeout(order, 2300); }, { threshold: 0.55 }).observe(sec);
 }
 
-// 5 · the journey (round 11): the page settles on each of its parts (CSS scroll snapping, desktop only); each part
+// 5 · the journey (round 11): the page settles on each of its parts (CSS scroll snapping, where they all fit); each part
 // rises into view once; the rail beside the page says where you are and takes you to the others
 {
   const parts = ['web', 'built', 'jus'].map(id => document.getElementById(id)), rail = $('.rail'), links = [...rail.querySelectorAll('a')];
@@ -170,4 +188,12 @@ heroField($('#hero'), { quiet: [$('#hero .wm'), $('#hero .lead'), $('#hero .cta'
     rail.classList.toggle('shown', $('#hero').getBoundingClientRect().bottom < innerHeight * 0.5 && $('.foot').getBoundingClientRect().top > innerHeight * 0.6);
   };
   addEventListener('scroll', where, { passive: true }); where();
+  // round 17d: snap only where every part fits the screen (measured as they are, without snapping's full-screen height)
+  const fit = () => {
+    const root = document.documentElement; root.classList.remove('snapping');
+    if (reduced) return;
+    const all = [...document.querySelectorAll('.sec.snap')].every(s => s.getBoundingClientRect().height <= innerHeight);
+    root.classList.toggle('snapping', all);
+  };
+  let t = 0; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(fit, 200); }); fit();
 }
