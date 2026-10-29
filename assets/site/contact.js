@@ -26,7 +26,7 @@ form.addEventListener('submit', async e => {
   let ok = false;
   try { const r = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); ok = r.ok; } catch { ok = false; }
   btn.disabled = false; btn.firstChild.textContent = 'Send ';
-  if (ok) { $('#sent-to').textContent = data.email; form.hidden = true; const s = $('#sent'); s.hidden = false; s.focus(); return; }
+  if (ok) { form.hidden = true; const s = $('#sent'); s.hidden = false; s.focus(); return; }
   note.innerHTML = `Our form could not send it, so your email app opens with the message ready. Or write to <a href="mailto:${TO}">${TO}</a>.`;
   const body = `${data.topic}\n\n${data.message}\n\n${data.name}${data.company ? `, ${data.company}` : ''}\n${data.email}`;
   location.href = `mailto:${TO}?subject=${encodeURIComponent(`${data.topic} · ${data.name}`)}&body=${encodeURIComponent(body)}`;
