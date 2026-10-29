@@ -505,23 +505,14 @@ html.snapping { scroll-snap-type: y proximity; }
   .glass.app .aleft .plinks { display: grid; align-self: stretch; justify-items: start; justify-content: start; text-align: left; }
 }
 
-/* round 17e · the small navigation (mnav.js), below 1020px: Menu in the page's nav; a slim bar once that nav is gone */
-.mbtn, .mbar, .msheet, .mshade { display: none; }
+/* round 17e · the small navigation (mnav.js), below 1020px: Menu in the page's nav (round 19: the nav itself follows the page) */
+.mbtn, .msheet, .mshade { display: none; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 @media (max-width: 1020px) {
   .mbtn { display: inline-grid; place-items: center; flex: none; width: 44px; height: 44px; border: 0; border-radius: 12px; cursor: pointer;
     color: #fff; background: rgba(255,255,255,.12); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
   .mbtn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; }
   .hnav .acts .b-glass { display: none; } /* Sign in moves into the menu (and stays big in the landing's hero) */
-  .mbar { display: flex; align-items: center; gap: 10px; position: fixed; z-index: 60; left: 0; right: 0; top: 0; height: 56px; padding: 0 12px 0 16px;
-    background: rgba(23,20,29,.86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 1px 0 var(--ring), 0 10px 30px -18px rgba(0,0,0,.8);
-    translate: 0 -110%; transition: translate .35s var(--ease); }
-  .mbar.on, .menu-open .mbar { translate: 0 0; }
-  .mbar .brand { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 16px; color: #fff; }
-  .mbar .brand svg { width: 26px; height: 26px; }
-  .mbar .where { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13.5px; color: var(--text-2); padding-left: 10px; border-left: 1px solid var(--ring); }
-  .mbar .btn { height: 38px; padding: 0 13px; font-size: 14px; }
-  .mbar .mbtn { width: 40px; height: 40px; }
   .mshade:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 61; background: rgba(10,8,14,.55); backdrop-filter: blur(2px); }
   .msheet:not([hidden]) { display: grid; gap: 4px; position: fixed; z-index: 62; left: 10px; right: 10px; top: 10px; max-height: calc(100svh - 20px); overflow: auto;
     padding: 14px; border-radius: 20px; background: rgba(28,22,40,.97); box-shadow: 0 0 0 1px var(--ring), 0 30px 80px -20px rgba(0,0,0,.8); animation: msin .25s var(--ease); }
@@ -530,7 +521,7 @@ html.snapping { scroll-snap-type: y proximity; }
   .msheet .mi:hover, .msheet .mi[aria-current] { background: rgba(255,255,255,.07); }
   .msheet .mp b { font-weight: 600; } .msheet .mp span { font-size: 14px; font-weight: 400; color: var(--text-2); line-height: 1.4; }
 }
-@media (prefers-reduced-motion: reduce) { .mbar { transition: none; } .msheet { animation: none !important; } }
+@media (prefers-reduced-motion: reduce) { .msheet { animation: none !important; } }
 /* round 17e · Just App on a phone: the product's mark comes back (Erik), small, between the tabs and the product's line */
 @media (max-width: 760px) {
   .app .gmark { display: flex; order: 3; margin-top: 12px; } .app .gmark canvas { height: 84px; }
@@ -554,7 +545,6 @@ html.snapping { scroll-snap-type: y proximity; }
 /* round 17f · the menu opens on where you are, over a T visual in a loop; no Talk to us beside Menu */
 @media (max-width: 1020px) {
   .hnav .acts { display: none; }
-  .mbar .where:empty { border: 0; }
   .msheet:not([hidden]) { gap: 2px; padding: 10px; }
   .msheet .mhead { position: relative; height: 72px; margin-bottom: 4px; border-radius: 14px; overflow: hidden; isolation: isolate;
     background: radial-gradient(80% 120% at 80% 0%, oklch(0.5 0.2 295 / .55), transparent 70%), rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px var(--ring); }
@@ -617,3 +607,58 @@ html.snapping { scroll-snap-type: y proximity; }
   .foot { gap: 18px; } .foot .fme { grid-column: 1 / -1; grid-row: 3; margin-top: 6px; } .foot .fapp { grid-column: 1 / -1; grid-row: 2; }
   .foot .fco { grid-column: 1 / -1; grid-row: 1; display: flex; gap: 24px; padding: 0 0 0 4px; }
 }
+
+/* round 19 · the nav follows the page (Erik: the existing nav, not a second bar). It is fixed from the first paint,
+   in the page's frame; the tops of the pages keep its room. Once the page moves (html.stuck, mnav.js) it is a glass bar
+   tinted like the hero, a little below the top, with the part you are in and a lilac line for how far down you are */
+:root { --navh: 76px; } html { scroll-padding-top: 24px; } /* a part landed on starts below the nav */
+.hnav { position: fixed; z-index: 55; top: 0; left: 0; right: 0; width: var(--frame); margin-inline: auto; box-sizing: border-box; border-radius: 20px;
+  transition: translate .4s var(--ease), height .4s var(--ease), background-color .4s, box-shadow .4s, backdrop-filter .4s; }
+.hero, .ptop, .ctop { padding-top: var(--navh); }
+.stuck .hnav { translate: 0 10px; height: 62px; background-color: oklch(0.27 0.1 293 / .74); background-image: linear-gradient(180deg, rgba(255,255,255,.07), transparent 60%);
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.13), inset 0 1px 0 rgba(255,255,255,.16), 0 20px 44px -22px rgba(0,0,0,.85); }
+.hnav::after { content: ''; position: absolute; left: 22px; right: 22px; bottom: -1px; height: 2px; border-radius: 2px; transform-origin: left; scale: var(--p, 0) 1;
+  background: linear-gradient(90deg, var(--lilac), oklch(0.8 0.14 322)); box-shadow: 0 0 10px oklch(0.8 0.15 300 / .6); opacity: 0; transition: opacity .4s; }
+.stuck .hnav::after { opacity: 1; }
+.stuck .hnav .btn { height: 40px; }
+.npart { display: none; }
+@media (min-width: 1021px) {
+  .stuck .npart.on { display: inline-flex; align-items: center; gap: 8px; margin-left: auto; padding: 6px 12px 6px 10px; border-radius: 99px; font-family: var(--mono); font-size: 12.5px; color: var(--lilac);
+    background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); animation: msin .3s var(--ease); }
+  .stuck .npart.on::before { content: ''; width: 7px; height: 7px; border-radius: 2px; background: var(--lilac); box-shadow: 0 0 8px var(--lilac); }
+  .stuck .npart.on + .acts { margin-left: 14px; }
+}
+@media (max-width: 1020px) {
+  :root { --navh: 64px; }
+  .hnav { width: 100%; height: 64px; padding: 0 12px 0 16px; border-radius: 0; }
+  .hnav .mbtn { margin-left: auto; }
+  .stuck .hnav { translate: none; height: 58px; background-color: rgba(28,22,40,.84); box-shadow: 0 1px 0 var(--ring), 0 10px 30px -18px rgba(0,0,0,.8); }
+  .hnav::after { left: 0; right: 0; }
+  .stuck .hnav .mbtn { width: 40px; height: 40px; }
+}
+@media (prefers-reduced-motion: reduce) { .hnav { transition: none; } }
+
+/* round 19 · the menu's head says where you are again (the page; on the landing, the part); Home and Talk to us as
+   rows with a small sign, Talk to us under Contact */
+@media (max-width: 1020px) {
+  .msheet .mhead { height: 100px; }
+  .msheet .mname { position: absolute; left: 16px; bottom: 12px; margin: 0; display: grid; gap: 2px; }
+  .msheet .mname span { font-family: var(--mono); font-size: 12px; color: var(--lilac); }
+  .msheet .mname b { font-family: var(--display); font-weight: 760; font-size: 28px; line-height: 1.05; letter-spacing: -0.03em; font-variation-settings: 'opsz' 96, 'wdth' 84; color: #fff; text-shadow: 0 2px 14px rgba(23,20,29,.9); }
+  .msheet .mi { display: flex; align-items: center; gap: 12px; padding: 8px 10px 8px 8px; }
+  .msheet .mi i { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+  .msheet .mi svg { width: 18px; height: 18px; fill: none; stroke: var(--lilac); stroke-width: 1.6; stroke-linejoin: round; }
+  .msheet .mk { margin: 8px 0 0 12px; font-family: var(--mono); font-size: 12.5px; color: var(--lilac); }
+}
+@media (max-width: 1020px) and (max-height: 620px) {
+  .msheet .mhead { height: 60px; } .msheet .mname { bottom: 8px; } .msheet .mname b { font-size: 21px; } .msheet .mp { padding-block: 4px; } .msheet .mp canvas { height: 40px; } .msheet .mi { padding-block: 5px; } .msheet .mi i { width: 34px; height: 34px; } .msheet .mk { margin-top: 4px; }
+}
+
+/* round 19 · Talk to us and Sign in once, not twice (Erik): where the nav carries them (above 1020px) the pair in the
+   top of the landing and of the product pages goes; on phones the nav has only Menu, so the pair stays there */
+@media (min-width: 1021px) { .hero .cta.big, .ptop .ptext .cta { display: none; } }
+
+/* round 19 · Jus. says, quietly, that it is Latin: a kicker like the other parts' numbers, as a dictionary has it */
+.order .jus .lat { margin: 0 0 6px; font-family: var(--mono); font-size: 12.5px; letter-spacing: .02em; color: var(--text-3); }
+.order .jus .lat i { font-style: italic; color: var(--lilac); }

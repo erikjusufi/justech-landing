@@ -1,8 +1,8 @@
 // The contact page: the form, on the hero's field. Round 17: Send posts the form to /api/contact (a Cloudflare Pages
 // Function that mails it through Resend); if that cannot take it (not deployed, not configured, offline), Send falls
 // back to what it did before: the visitor's email app opens with the message written.
-import './mnav.js?v=dad1a7d7aa81'; // round 17e: the small navigation on phones
-import { heroField } from './herofield.js?v=dad1a7d7aa81';
+import './mnav.js?v=56738ba881b3'; // round 17e: the small navigation on phones
+import { heroField } from './herofield.js?v=56738ba881b3';
 const $ = (s, r = document) => r.querySelector(s);
 const TO = 'info@justech.uk';
 await document.fonts.ready;
@@ -11,7 +11,7 @@ await document.fonts.ready;
 // grows from its spark, signals running from many sources; it goes quiet behind the title, the form and the nav
 {
   const box = $('.ctop');
-  heroField(box, { quiet: [$('h1', box), $('#form', box), $('.hnav', box)] });
+  heroField(box, { quiet: [$('h1', box), $('#form', box), document.querySelector('.hnav')] });
 }
 
 // Send: check the fields, post them, and say what happened; the email app only if the post does not go through

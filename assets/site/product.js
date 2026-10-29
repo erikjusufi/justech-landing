@@ -1,11 +1,11 @@
 // A JusTech product page, round 9 (round 10: the field around the figure fades almost away, so the figure is what
 // you see): the product's opening (its figure carved from the field), what it does, its
 // screen, the other two products as lockups, and the close. The page's product is <body data-prod>.
-import './mnav.js?v=dad1a7d7aa81'; // round 17e: the small navigation on phones
-import { tfield, reduced } from '../system/tfield.js?v=dad1a7d7aa81';
-import { ignite, rel } from '../system/ignite.js?v=dad1a7d7aa81';
-import { FIGURES, figure, box, mark } from '../system/figures.js?v=dad1a7d7aa81';
-import { mount, play as playScreen } from '../shared/screens.js?v=dad1a7d7aa81';
+import './mnav.js?v=56738ba881b3'; // round 17e: the small navigation on phones
+import { tfield, reduced } from '../system/tfield.js?v=56738ba881b3';
+import { ignite, rel } from '../system/ignite.js?v=56738ba881b3';
+import { FIGURES, figure, box, mark } from '../system/figures.js?v=56738ba881b3';
+import { mount, play as playScreen } from '../shared/screens.js?v=56738ba881b3';
 const $ = (s, r = document) => r.querySelector(s);
 const mobile = matchMedia('(max-width: 760px)').matches;
 const LILAC = getComputedStyle(document.documentElement).getPropertyValue('--sig-t').trim();
@@ -18,8 +18,8 @@ for (const sec of document.querySelectorAll('.prod')) {
   const name = sec.dataset.prod, canvas = $('canvas', sec), T = $('.T', sec), text = $('.ptext', sec);
   const cell = mobile ? 22 : 32, W = sec.clientWidth, H = sec.clientHeight;
   // the figure fills the right of the first screen (the lower half on a phone), clear of the name and the buttons
-  const region = mobile ? { insight: [0.06, 0.56, 0.94, 0.93], content: [0.08, 0.54, 0.92, 0.95], ops: [0.28, 0.57, 0.72, 0.9] }[name]
-                        : { insight: [0.46, 0.1, 0.95, 0.86], content: [0.48, 0.08, 0.94, 0.9], ops: [0.52, 0.14, 0.9, 0.84] }[name];
+  const region = mobile ? { insight: [0.06, 0.56, 0.94, 0.93], content: [0.08, 0.54, 0.92, 0.95], ops: [0.06, 0.48, 0.94, 0.97] }[name]
+                        : { insight: [0.46, 0.1, 0.95, 0.86], content: [0.48, 0.08, 0.94, 0.9], ops: [0.46, 0.12, 0.95, 0.86] }[name];
   const g = box({ cell, W, H }, region), [si, sj] = FIGURES[name](g).seed;
   let quiet = [], dimAt = 0, fig = null, labels = [];
   // round 8b: drawn about three times faster. The figure is carved the moment the spark lands, while the field is
