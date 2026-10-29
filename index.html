@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="js">
+<html lang="en" class="js snapping">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,66 +20,71 @@
   <linearGradient id="r8-area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="oklch(0.82 0.11 300)" stop-opacity=".3"/><stop offset="1" stop-color="oklch(0.82 0.11 300)" stop-opacity="0"/></linearGradient>
 </defs></svg>
 
-<header class="hero field-violet" id="hero" data-ignite>
+<header class="hero field-violet" id="hero" data-ignite data-j3>
   <canvas aria-hidden="true"></canvas>
   <nav class="hnav" aria-label="Main">
     <a class="brand" href="./"><svg class="mark" aria-hidden="true"><use href="#mark-on-violet"/></svg>JusTech</a>
     <div class="links"><a href="./" aria-current="page">Home</a>
-      <div class="suite" role="group" aria-label="Just App"><span class="sl"><i class="appmark" aria-hidden="true">t</i>Just App</span><a href="insight/">Insight</a><a href="content/">Content</a><a href="ops/">Ops</a></div></div>
+      <div class="suite" role="group" aria-label="JustApp"><span class="sl"><i class="appmark" aria-hidden="true">t</i>JustApp</span><a href="insight/">Insight</a><a href="content/">Content</a><a href="ops/">Ops</a></div></div>
     <div class="acts"><a class="btn b-light" href="contact/">Talk to us</a><a class="btn b-glass" href="https://app.justech.uk">Sign in <svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a></div>
   </nav>
   <div class="hero-in">
     <h1 class="wm display"><span class="ch" style="--k:0">J</span><span class="ch" style="--k:1">u</span><span class="ch" style="--k:2">s</span><span class="ch T" style="--k:3">T</span><span class="ch" style="--k:4">e</span><span class="ch" style="--k:5">c</span><span class="ch" style="--k:6">h</span></h1>
     <div class="lower">
       <p class="lead rise" style="--i:0">Websites, applications and AI systems, designed, built and run by one team. <b>Technology is all we do.</b></p>
-      <div class="cta big rise" style="--i:1"><a class="btn b-light" href="contact/">Talk to us <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="btn b-glass si-big" href="https://app.justech.uk"><span>Sign in<small>Just App</small></span><svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a></div>
+      <div class="cta big rise" style="--i:1"><a class="btn b-light" href="contact/">Talk to us <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a><a class="btn b-glass si-big" href="https://app.justech.uk"><span>Sign in<small>JustApp</small></span><svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a></div>
     </div>
   </div>
+  <a class="cue" href="#web"><span>On the web</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M4 9l4 4 4-4"/></svg></a>
   <i class="drop" aria-hidden="true"></i>
 </header>
+<nav class="rail" aria-label="On this page"><a href="#web"><i></i><span>01 · On the web</span></a><a href="#built"><i></i><span>02 · AI and custom</span></a><a href="#jus"><i></i><span>Jus</span></a></nav>
 
 <main>
-<section class="sec" id="web" aria-labelledby="web-h">
-  <div class="part">
+<section class="sec snap" id="web" aria-labelledby="web-h">
+  <div class="part rv">
     <div class="phead"><span class="k">01 · On the web</span>
       <h2 id="web-h" class="display">Websites and web applications, <span class="hl">on our infrastructure.</span></h2></div>
     <div class="pbody"><p>Sites, web services and applications that work in any browser. We design and build them, host them on our own infrastructure, and keep them running.</p>
       <ul class="kinds"><li>Websites</li><li>Web services</li><li>Web applications</li></ul></div>
   </div>
 
-  <div class="glass" id="products" aria-labelledby="app-h">
+  <div class="glass app rv" id="products" aria-labelledby="app-h">
     <div class="pool"></div>
-    <div class="apphead"><i class="appmark lg" aria-hidden="true">t</i>
-      <div><h3 id="app-h" class="display">Jus<span class="t">t</span> App</h3><p>Comes with every site we run. Three apps, one sign-in.</p></div>
-      <a class="btn b-glass" href="https://app.justech.uk">Sign in <svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a></div>
-    <div class="tabs"><div class="tablist" role="tablist" aria-label="Just App">
-      <button role="tab" data-tab="insight" aria-controls="p-s">Just Insight</button>
-      <button role="tab" data-tab="content" aria-controls="p-s">Just Content</button>
-      <button role="tab" data-tab="ops" aria-controls="p-s">Just Ops</button>
-    </div></div>
-    <div class="gmark" aria-hidden="true"><canvas></canvas></div>
-    <p class="pline" data-line>What happened on your site, and why, in plain words.</p>
-    <p class="pline" data-line hidden>Change your site yourself, in its own look, without breaking it.</p>
-    <p class="pline" data-line hidden>Your site up, renewed and backed up, checked every night.</p>
-    <div class="persp" role="tabpanel" id="p-s" aria-label="Product screen"><div class="tilt" data-stage></div></div>
-    <p class="demo">Demo data: an invented tour company.</p>
-    <p class="plinks"><a href="insight/">More about <b>Just Insight</b> →</a><a href="content/">More about <b>Just Content</b> →</a><a href="ops/">More about <b>Just Ops</b> →</a></p>
+    <div class="aleft">
+      <div class="apphead"><i class="appmark lg" aria-hidden="true">t</i>
+        <div><h3 id="app-h" class="display">Jus<span class="t">t</span>App</h3><p>Comes with every site we run. Three apps, one sign-in.</p></div></div>
+      <div class="tabs"><div class="tablist" role="tablist" aria-label="JustApp">
+        <button role="tab" data-tab="insight" aria-controls="p-s">JustInsight</button>
+        <button role="tab" data-tab="content" aria-controls="p-s">JustContent</button>
+        <button role="tab" data-tab="ops" aria-controls="p-s">JustOps</button>
+      </div></div>
+      <div class="gmark" aria-hidden="true"><canvas></canvas></div>
+      <p class="pline" data-line>What happened on your site, and why, in plain words.</p>
+      <p class="pline" data-line hidden>Change your site yourself, in its own look, without breaking it.</p>
+      <p class="pline" data-line hidden>Your site up, renewed and backed up, checked every night.</p>
+      <p class="plinks"><a href="insight/">More about <b>JustInsight</b> →</a><a href="content/">More about <b>JustContent</b> →</a><a href="ops/">More about <b>JustOps</b> →</a></p>
+      <a class="btn b-glass" href="https://app.justech.uk">Sign in to JustApp <svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a>
+    </div>
+    <div class="aright"><div class="persp" role="tabpanel" id="p-s" aria-label="Product screen"><div class="tilt" data-stage></div></div>
+      <p class="demo">Demo data: an invented tour company.</p></div>
   </div>
 </section>
 
-<section class="sec" id="built" aria-labelledby="built-h">
-  <div class="built field-dark">
+<section class="sec snap" id="built" aria-labelledby="built-h">
+  <div class="built field-dark rv">
     <canvas aria-hidden="true"></canvas>
     <div class="btext"><span class="k">02 · AI and custom</span>
       <h2 id="built-h" class="display">AI systems and custom applications, <span class="hl">built for you.</span></h2>
       <p>Agent harnesses, agentic systems and custom software, from the first idea to running it. Tell us what you need.</p>
-      <div class="cta"><a class="btn b-light" href="contact/">Talk to us <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div></div>
-    <p class="slot">[case: client, result, with the client’s yes]</p>
+      <div class="cta"><a class="btn b-light" href="contact/">Talk to us <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></div>
+      <p class="slot">[case: client, result, with the client’s yes]</p></div>
+    <div class="run glass-panel" aria-label="An agent at work, step by step (demo)"><p class="rk"><span>An agent at work</span><span>Demo: an invented tour company</span></p><ol></ol></div>
   </div>
 </section>
 
-<section class="sec" id="jus" aria-labelledby="jus-h">
-  <div class="order field-dark"><canvas aria-hidden="true"></canvas>
+<section class="sec snap" id="jus" aria-labelledby="jus-h">
+  <div class="order field-dark rv"><canvas aria-hidden="true"></canvas>
     <div class="jus"><h2 id="jus-h">Jus<span class="dot">.</span></h2>
       <p class="right">We build things the right way.</p>
       <p class="stmt">We do your numbers justice.</p>
@@ -89,9 +94,9 @@
 
 </main>
 
-<footer class="foot">
+<footer class="foot snap-end">
   <a class="brand" href="./"><svg class="mark" aria-hidden="true"><use href="#mark"/></svg>JusTech</a>
-  <nav aria-label="Footer"><span class="fl"><i class="appmark" aria-hidden="true">t</i>Just App</span><a href="insight/">Insight</a><a href="content/">Content</a><a href="ops/">Ops</a><a href="contact/">Talk to us</a></nav>
+  <nav aria-label="Footer"><span class="fl"><i class="appmark" aria-hidden="true">t</i>JustApp</span><a href="insight/">Insight</a><a href="content/">Content</a><a href="ops/">Ops</a><a href="contact/">Talk to us</a></nav>
   <a class="btn b-glass si" href="https://app.justech.uk">Sign in <svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a>
   <span class="copy">© 2026 JusTech. Zagreb, Croatia.</span>
 </footer>

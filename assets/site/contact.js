@@ -1,22 +1,15 @@
-// The contact page: the form, and behind it the field, every T turned to point at Send (it follows the pointer and
-// returns). There is no server behind the form yet: Send opens the visitor's email app with the message written.
-import { tfield, reduced } from '../system/tfield.js';
-import { rel } from '../system/ignite.js';
+// The contact page: the form, on the hero's field. There is no server behind the form yet: Send opens the visitor's
+// email app with the message written.
+import { heroField } from './herofield.js';
 const $ = (s, r = document) => r.querySelector(s);
-const mobile = matchMedia('(max-width: 760px)').matches;
 const TO = 'info@justech.uk';
+await document.fonts.ready;
 
+// round 11: the same field as the hero (herofield.js): the T of "Tell" takes its other half, lights, and the field
+// grows from its spark, signals running from many sources; it goes quiet behind the title, the form and the nav
 {
-  const box = $('.ctop'), send = $('#talk'), form = $('#form');
-  const inside = (t, r) => t.cx > r.x && t.cx < r.x + r.w && t.cy > r.y && t.cy < r.y + r.h;
-  let quiet = [], t;
-  const field = tfield($('canvas', box), { cell: mobile ? 30 : 48, weight: 0.24, seed: [0.75, 0.6], mix: [0.86, 0.96], ink: 'oklch(0.7 0.15 298 / .3)', glow: 'oklch(0.86 0.1 300)', growMs: 900, pointer: 'follow',
-    onLayout() { quiet = [rel($('h1', box), box), rel(form, box), rel($('.hnav', box), box)]; },
-    mask: (x, y, tl) => (quiet.some(r => inside(tl, r)) ? 0.08 : 1),
-    onGrown(f) { const b = rel(send, box); f.orient(b.cx, b.cy, { spread: 1.1 }); },
-    onPointer(x, y, f) { if (t) return; t = setTimeout(() => (t = 0), 90); f.orient(x, y); } });
-  box.addEventListener('pointerleave', () => { const b = rel(send, box); setTimeout(() => field.orient(b.cx, b.cy, { spread: 1.6 }), 120); });
-  form.addEventListener('focusin', () => { const b = rel(send, box); field.orient(b.cx, b.cy, { spread: 2 }); });
+  const box = $('.ctop');
+  heroField(box, { quiet: [$('h1', box), $('#form', box), $('.hnav', box)] });
 }
 
 // Send: check the fields, then open the visitor's email app with the message written out

@@ -275,18 +275,90 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .topic input:checked + span { background: #f1edf7; color: oklch(0.3 0.15 292); box-shadow: none; }
 .topic input:focus-visible + span { outline: 2px solid var(--lilac); outline-offset: 2px; }
 
-/* round 10 · J3 in the hero's word: the right half of the T falls and locks before the T lights (main.js) */
-.hero .T { position: relative; display: inline-block; }
-.hero .T .th { display: inline-block; }
-.hero .T .th.b { position: absolute; left: 0; top: 0; visibility: hidden; }
-.hero.split .T .th.a { clip-path: polygon(-60% -60%, 50.4% -60%, 50.4% 160%, -60% 160%); }
-.hero.split .T .th.b { visibility: visible; clip-path: polygon(49.6% -60%, 160% -60%, 160% 160%, 49.6% 160%); transform-origin: 76% 19%; animation: tfall 1.4s both; }
-@keyframes tfall { 0% { transform: translateY(-1.5em) rotate(-270deg); opacity: 0; } 8% { opacity: 1; }
-  22% { transform: translateY(-1.1em) rotate(-270deg); animation-timing-function: cubic-bezier(.2,.9,.25,1); } 30% { transform: translateY(-.8em) rotate(-180deg); }
-  48% { transform: translateY(-.6em) rotate(-180deg); } 56% { transform: translateY(-.32em) rotate(-90deg); } 72% { transform: translateY(-.2em) rotate(-90deg); animation-timing-function: cubic-bezier(.55,0,.9,.4); }
-  88% { transform: none; } 94% { transform: translateY(.02em); } 100% { transform: none; } }
+/* J3 in the lit T (herofield.js): the right half of the T falls and locks before the T lights. Round 11: one smooth
+   fall with gravity (translate) and one turn that finishes just before it lands (rotate), 0.9 s */
+[data-j3] .T { position: relative; display: inline-block; }
+[data-j3] .T .th { display: inline-block; }
+[data-j3] .T .th.b { position: absolute; left: 0; top: 0; visibility: hidden; }
+[data-j3].split .T .th.a { clip-path: polygon(-60% -60%, 50.4% -60%, 50.4% 160%, -60% 160%); }
+[data-j3].split .T .th.b { visibility: visible; clip-path: polygon(49.6% -60%, 160% -60%, 160% 160%, 49.6% 160%); transform-origin: 76% 19%;
+  animation: tdrop .9s cubic-bezier(.55,0,.85,.45) both, tturn .9s cubic-bezier(.3,.6,.3,1) both, tin .2s linear both; }
+@keyframes tdrop { 0% { translate: 0 -1.3em; } 86% { translate: 0 0; animation-timing-function: cubic-bezier(.2,.7,.3,1); } 93% { translate: 0 .03em; } 100% { translate: 0 0; } }
+@keyframes tturn { 0% { rotate: -180deg; } 72%, 100% { rotate: 0deg; } }
+@keyframes tin { from { opacity: 0; } }
 /* the seam flashes as the half locks */
-.hero .T::after { content: ''; position: absolute; left: calc(50% - .015em); width: .03em; top: 11.5%; bottom: 11.5%; background: #fff; border-radius: 1px; opacity: 0; pointer-events: none;
+[data-j3] .T::after { content: ''; position: absolute; left: calc(50% - .015em); width: .03em; top: 11.5%; bottom: 11.5%; background: #fff; border-radius: 1px; opacity: 0; pointer-events: none;
   box-shadow: 0 0 .06em #fff, 0 0 .2em oklch(0.85 0.12 300); }
-.hero.split .T::after { animation: seam 1.4s ease both; }
-@keyframes seam { 0%, 87% { opacity: 0; } 92% { opacity: 1; } 100% { opacity: 0; } }
+[data-j3].split .T::after { animation: seam .95s ease both; }
+@keyframes seam { 0%, 84% { opacity: 0; } 90% { opacity: 1; } 100% { opacity: 0; } }
+
+/* round 11 · a larger Sign in in the hero */
+.cta.big .btn { height: 66px; padding: 0 30px; font-size: 18.5px; border-radius: 18px; }
+.cta.big .b-glass { padding: 0 26px 0 30px; gap: 18px; } .si-big small { font-size: 13px; } .cta.big .b-glass svg { width: 20px; height: 20px; }
+.hnav .btn.b-glass { height: 48px; padding: 0 22px; font-size: 15.5px; }
+
+/* round 11 · product names joined (JustInsight): the name on one line, the lit t inside it */
+.ptext { max-width: 640px; } .pname { font-size: clamp(48px, 6vw, 92px); white-space: nowrap; }
+
+/* round 11 · the journey: the page settles on each part (desktop), parts rise in, a rail says where you are */
+@media (min-width: 900px) and (min-height: 700px) and (prefers-reduced-motion: no-preference) {
+  html.snapping { scroll-snap-type: y proximity; }
+  .snapping .hero, .snapping .snap { scroll-snap-align: start; }
+  .snapping .snap-end { scroll-snap-align: end; }
+  .snapping .sec.snap { min-height: 100svh; display: flex; flex-direction: column; justify-content: center; padding: 40px 0; box-sizing: border-box; }
+}
+.js .rv { opacity: 0; transform: translateY(28px); }
+.js .rv.in { opacity: 1; transform: none; transition: opacity .8s var(--ease), transform 1s var(--ease); }
+.js .glass.rv.in { transition-delay: .12s; }
+.cue { position: absolute; z-index: 2; left: 50%; bottom: 22px; translate: -50% 0; display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 99px; font-size: 13.5px; color: rgba(255,255,255,.86);
+  background: rgba(255,255,255,.08); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; transition: opacity .8s var(--ease) .9s; }
+.cue svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.6; } .lit .cue { opacity: 1; } .cue:hover { color: #fff; background: rgba(255,255,255,.14); }
+@media (prefers-reduced-motion: no-preference) { .lit .cue svg { animation: nudge 1.8s ease-in-out 2s 3; } @keyframes nudge { 50% { transform: translateY(3px); } } }
+.rail { position: fixed; z-index: 40; right: 18px; top: 50%; translate: 0 -50%; display: grid; gap: 4px; opacity: 0; pointer-events: none; transition: opacity .4s; }
+.rail.shown { opacity: 1; pointer-events: auto; }
+.rail a { display: flex; align-items: center; justify-content: flex-end; gap: 10px; padding: 6px 4px; font-size: 12px; font-family: var(--mono); color: var(--text-3); flex-direction: row-reverse; }
+.rail i { width: 8px; height: 8px; border-radius: 2px; background: var(--text-3); opacity: .5; transition: all .3s; flex: none; }
+.rail span { opacity: 0; translate: 6px 0; transition: opacity .3s, translate .3s; white-space: nowrap; padding: 3px 8px; border-radius: 99px; background: rgba(23,20,29,.8); }
+.rail a:hover span, .rail a[aria-current] span { opacity: 1; translate: 0 0; }
+.rail a[aria-current] { color: var(--lilac); } .rail a[aria-current] i { background: var(--lilac); opacity: 1; height: 22px; box-shadow: 0 0 10px oklch(0.8 0.15 300 / .6); }
+@media (max-width: 1100px) { .rail { display: none; } }
+
+/* round 11 · on the web, in one screen: the head across, then JustApp beside its screen */
+.snap .part { width: 100%; box-sizing: border-box; }
+.part h2 { font-size: clamp(38px, 4vw, 60px); }
+.glass.app { display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); gap: 20px clamp(30px, 4vw, 64px); align-items: center; max-width: 1320px; width: 100%; box-sizing: border-box; margin: clamp(26px, 4vh, 44px) auto 0; padding: 0 var(--pad); overflow: visible; }
+.glass.app .pool { top: 50%; left: 62%; width: 1000px; height: 640px; translate: -50% -50%; }
+.app .apphead { margin: 0 0 20px; padding: 0; background: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+.app .tabs { justify-content: flex-start; } .app .tablist { width: 100%; } .app [role=tab] { flex: 1; padding: 0 10px; font-size: 14px; }
+.app .gmark { justify-content: stretch; margin-top: 18px; } .app .gmark canvas { width: 100%; height: 120px; }
+.app .pline { text-align: left; margin: 8px 0 0; font-size: clamp(22px, 2vw, 28px); max-width: none; min-height: 2.4em; }
+.app .plinks { display: grid; justify-content: start; gap: 6px; margin: 16px 0 0; text-align: left; }
+.app .aleft > .btn { margin-top: 20px; }
+.app .tilt { transform: none; animation: none; width: 100%; }
+.app .demo { margin-top: 12px; }
+@media (max-width: 960px) { .glass.app { grid-template-columns: 1fr; } .app .pool { left: 50%; } }
+
+/* round 11 · the agent at work: the loop carved in the upper right, the run narrated below it */
+.built { min-height: min(780px, calc(100svh - 80px)); }
+.built h2 { font-size: clamp(38px, 4vw, 60px); }
+.run { position: absolute; z-index: 1; right: clamp(20px, 3vw, 44px); bottom: clamp(20px, 3vw, 36px); width: min(560px, 46%); padding: 16px 18px; background-color: rgba(30,20,60,.35); }
+.run .rk { display: flex; justify-content: space-between; gap: 12px; margin: 0 0 10px; font-family: var(--mono); font-size: 11.5px; color: var(--text-3); } .run .rk span:first-child { color: var(--lilac); }
+.run ol { margin: 0; padding: 0; list-style: none; display: grid; gap: 2px; min-height: 13.5em; }
+.run li { display: grid; grid-template-columns: 7.5em 1fr; gap: 10px; padding: 4px 8px; border-radius: 8px; font-size: 13.5px; line-height: 1.4; color: var(--text-2); opacity: 0; translate: 0 4px; transition: opacity .4s, translate .4s, background .3s; }
+.run li b { font-family: var(--mono); font-weight: 400; font-size: 12px; color: var(--text-3); padding-top: 1px; }
+.run li.shown { opacity: 1; translate: 0 0; } .run li.out { opacity: 0; }
+.run li.now { background: rgba(255,255,255,.07); color: #fff; } .run li.now b { color: var(--lilac); }
+.run li.no b, .run li.no.now b { color: var(--sig-edge); } .run li.ok b { color: var(--ok, #8fd4a4); }
+.built .slot { bottom: auto; top: auto; position: relative; left: auto; margin: 22px 0 0; display: inline-block; }
+@media (max-width: 760px) {
+  .built { min-height: 1240px; } .run { left: 14px; right: 14px; width: auto; bottom: 16px; } .run li { grid-template-columns: 1fr; gap: 0; } .run ol { min-height: 0; }
+  .built .stn { font-size: 11px; }
+}
+
+/* round 11 · the contact page's title ignites like the hero's word, and is there from the first paint */
+.js .ctop[data-ignite] .ch { opacity: 1; transform: translateY(.04em); }
+.ctop h1 .ch { display: inline-block; }
+.ctop { position: relative; }
+.built .slot { max-width: none; white-space: nowrap; }
+.rail a[aria-current] span { opacity: 0; translate: 6px 0; } .rail a:hover span { opacity: 1; translate: 0 0; }
+@media (max-width: 760px) { .built .slot { white-space: normal; } }

@@ -31,7 +31,7 @@ for (const sec of document.querySelectorAll('.prod')) {
     // the stations' names light while a job is passing
     after() { for (const l of labels) l.classList.toggle('on', l._t.heat > 0.45); return false; } });
   const carve = f => {
-    fig = figure(f, name, box(f, region), { speed: 0.5 });
+    fig = figure(f, name, box(f, region), { speed: 0.72 }); // round 11: a little slower again
     dimAt = performance.now() + (reduced ? -1e5 : 400);
     for (const s of fig.labels || []) { const t = f.at(s.i, s.j), el = document.createElement('span'); el.className = 'stn'; el.textContent = s.l;
       const off = f.cell * 0.9, [dx, dy] = [[0, -1], [1, 0], [0, 1], [-1, 0]][s.d];
@@ -53,4 +53,4 @@ for (const sec of document.querySelectorAll('.prod')) {
 }
 
 // 3 · the other two products, as lockups
-for (const el of document.querySelectorAll('.lockup')) { const m = mark($('canvas', el), el.dataset.prod, { cell: mobile ? 9 : 10 }); el.addEventListener('pointerenter', () => m.play()); }
+for (const el of document.querySelectorAll('.lockup')) { const m = mark($('canvas', el), el.dataset.prod, { cell: mobile ? 9 : 10, speed: 0.58 }); el.addEventListener('pointerenter', () => m.play()); }

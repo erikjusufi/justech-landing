@@ -4,6 +4,9 @@
 //   Content: a page being written. A margin, a heading, lines of text with ascenders and descenders, an image block;
 //            the caret runs down the margin and out along each line.
 //   Agent:   built for you. A request splits at a T to your data and the model, joins, is checked, answers.
+//   Agentrun: an agent at work (round 11). A request comes in to the agent, which goes up to your data, your
+//            systems and the model in turn, is checked against your rules, goes round again when it is not right
+//            yet, and answers. The page sends the signal step by step and narrates it.
 //   Ops:     the loop that runs every night. Four stations on one circuit (up, renewed, backed up, checked), and
 //            jobs going round it, lighting each station as they pass.
 // `g` is the grid box the figure fills: { i0, i1, j0, j1 } in cells. Shapes are drawn from demo ideas, not data.
@@ -24,6 +27,21 @@ export const FIGURES = {
       stations: [[i0, jm], [xd, j0], [xd, j1], [xc, jm], [i1, jm]],
       labels: [{ i: i0, j: jm, l: 'A request', d: 2 }, { i: xd, j: j0, l: 'Your data', d: 0 }, { i: xd, j: j1, l: 'The model', d: 2 }, { i: xc, j: jm, l: 'Checked', d: 0 }, { i: i1, j: jm, l: 'An answer', d: 2 }],
       seed: main1[0],
+    };
+  },
+  agentrun({ i0, i1, j0, j1 }) {
+    const n = i1 - i0, jm = j0 + Math.round((j1 - j0) * 0.56), xa = i0 + Math.round(n * 0.16), xc = i0 + Math.round(n * 0.84);
+    const xs = [0.35, 0.52, 0.69].map(f => i0 + Math.round(n * f)), tops = [j0, j0 + 2, j0];
+    const H = (a, b, j) => span(a, b).map(i => [i, j]), V = (i, a, b) => span(a, b).map(j => [i, j]);
+    const bus = H(i0, i1, jm), stems = xs.map((x, k) => V(x, jm, tops[k])), loop = [...V(xc, jm, j1), ...H(xc - 1, xa, j1), ...V(xa, j1 - 1, jm)];
+    const lm = Math.round((xa + xc) / 2);
+    return {
+      parts: [{ cells: bus, ink: LILAC, straight: 'I', step: 22 }, ...stems.map((c, k) => ({ cells: c, ink: k === 2 ? WHITE : LILAC, straight: 'I', step: 34, delay: (xs[k] - i0) * 22 })),
+        { cells: loop, ink: DIM, straight: 'I', step: 16, delay: n * 22 }],
+      stations: [[i0, jm], [xa, jm], ...xs.map((x, k) => [x, tops[k]]), [xc, jm], [i1, jm], [lm, j1]],
+      labels: [{ i: i0, j: jm, l: 'A request', d: 2 }, { i: xa, j: jm, l: 'The agent', d: 0 }, { i: xs[0], j: tops[0], l: 'Your data', d: 0 }, { i: xs[1], j: tops[1], l: 'Your systems', d: 0 },
+        { i: xs[2], j: tops[2], l: 'The model', d: 0 }, { i: xc, j: jm, l: 'Your rules', d: 0 }, { i: i1, j: jm, l: 'An answer', d: 2 }, { i: lm, j: j1, l: 'Not right yet: again', d: 2 }],
+      geo: { i0, i1, j0, j1, jm, xa, xc, xs, tops }, seed: bus[0],
     };
   },
   insight({ i0, i1, j0, j1 }) {
@@ -86,13 +104,14 @@ export const box = (field, [x0, y0, x1, y1]) => { const c = field.cell; return {
 
 // a product's mark: its figure alone, small, beside its name (a lockup), drawn fast. The field around it stays
 // faint, so the figure reads as a sign. `play(name)` draws another product's figure in the same place.
-export function mark(canvas, name, { cell = 11, speed = 0.42, weight = 0.26, ink = 'oklch(0.62 0.16 297 / .3)', pulses = true } = {}) {
+// `area` ([x0, y0, x1, y1] of the canvas) keeps the figure to part of it, so the field spreads around a small sign
+export function mark(canvas, name, { cell = 11, speed = 0.42, weight = 0.26, ink = 'oklch(0.62 0.16 297 / .3)', pulses = true, area = null } = {}) {
   let current = name, fade = 0;
   const f = tfield(canvas, { cell, weight, autoGrow: false, mix: [0.7, 0.88], lit: 0, growMs: 420, ink, glow: LILAC, tone: [0.4, 1], seed: [0.5, 0.5],
     // the figure at full strength; the rest a faint ground that fades out at the edges
     mask: (x, y, t, now) => (t.shape ? 1 : 0.55 - 0.3 * Math.min(1, (now - fade) / 500)) * (t.shape ? 1 : Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 5)),
     pulses: pulses ? { every: 700, max: 2, ms: 34, trail: 3, blur: 8 } : null });
-  const g = () => ({ i0: 1, j0: 1, i1: Math.max(4, Math.floor(f.W / cell) - 2), j1: Math.max(4, Math.floor(f.H / cell) - 2) });
+  const g = () => area ? box(f, area) : ({ i0: 1, j0: 1, i1: Math.max(4, Math.floor(f.W / cell) - 2), j1: Math.max(4, Math.floor(f.H / cell) - 2) });
   const draw = (n, delay = 0) => { current = n; fade = performance.now(); return figure(f, n, g(), { speed, delay }); };
   let seen = false;
   new IntersectionObserver(([e]) => { if (e.isIntersecting && !seen) { seen = true; f.grow(); draw(current, reduced ? 0 : 60); } }, { threshold: 0.5 }).observe(canvas);

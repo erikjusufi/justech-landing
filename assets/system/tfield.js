@@ -100,7 +100,7 @@ export function tfield(canvas, o = {}) {
     ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowBlur = P.blur ?? 14;
     const trail = c * (P.trail ?? 2.6);
     for (let n = pulses.length - 1; n >= 0; n--) {
-      const u = pulses[n], col = u.color || P.color || opt.glow, speed = c / (u.ms ?? P.ms ?? 110), s = (now - u.t) * speed, L = (u.path.length - 1) * c;
+      const u = pulses[n], col = u.color || P.color || opt.glow, speed = c / (u.ms ?? P.ms ?? 110), s = Math.max(0, now - u.t) * speed, L = (u.path.length - 1) * c;
       if (s - trail > L) { pulses.splice(n, 1); const end = u.path[u.path.length - 1]; end.heat = 1; end.hc = col; u.done?.(end); P.onArrive?.(end, api, u); continue; }
       ctx.strokeStyle = col; ctx.shadowColor = col;
       const k = Math.min(u.path.length - 1, Math.floor(s / c)); for (let m = 0; m <= k; m++) if (!u.path[m].warm) { u.path[m].warm = 1; u.path[m].heat = Math.max(u.path[m].heat, P.heat ?? 0.9); u.path[m].hc = col; }
