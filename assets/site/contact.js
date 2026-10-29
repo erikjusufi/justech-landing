@@ -10,7 +10,7 @@ const TO = 'info@justech.uk';
   const box = $('.ctop'), send = $('#talk'), form = $('#form');
   const inside = (t, r) => t.cx > r.x && t.cx < r.x + r.w && t.cy > r.y && t.cy < r.y + r.h;
   let quiet = [], t;
-  const field = tfield($('canvas', box), { cell: mobile ? 26 : 38, weight: 0.24, seed: [0.75, 0.6], mix: [0.86, 0.96], ink: 'oklch(0.7 0.15 298 / .5)', glow: 'oklch(0.86 0.1 300)', growMs: 900, pointer: 'follow',
+  const field = tfield($('canvas', box), { cell: mobile ? 30 : 48, weight: 0.24, seed: [0.75, 0.6], mix: [0.86, 0.96], ink: 'oklch(0.7 0.15 298 / .3)', glow: 'oklch(0.86 0.1 300)', growMs: 900, pointer: 'follow',
     onLayout() { quiet = [rel($('h1', box), box), rel(form, box), rel($('.hnav', box), box)]; },
     mask: (x, y, tl) => (quiet.some(r => inside(tl, r)) ? 0.08 : 1),
     onGrown(f) { const b = rel(send, box); f.orient(b.cx, b.cy, { spread: 1.1 }); },
@@ -23,9 +23,9 @@ const TO = 'info@justech.uk';
 $('#form').addEventListener('submit', e => {
   e.preventDefault();
   const f = e.target, bad = [...f.querySelectorAll('[required]')].filter(i => !i.value.trim() || (i.type === 'email' && !i.checkValidity()));
-  f.querySelectorAll('label').forEach(l => l.classList.toggle('bad', bad.includes(l.querySelector('input, textarea'))));
+  f.querySelectorAll(':scope > label').forEach(l => l.classList.toggle('bad', bad.includes(l.querySelector('input, textarea'))));
   if (bad.length) { bad[0].focus(); return; }
   const v = n => f.elements[n].value.trim();
-  const body = `${v('what')}\n\n${v('name')}${v('company') ? `, ${v('company')}` : ''}\n${v('email')}`;
-  location.href = `mailto:${TO}?subject=${encodeURIComponent(`What I'm building · ${v('name')}`)}&body=${encodeURIComponent(body)}`;
+  const body = `${v('topic')}\n\n${v('what')}\n\n${v('name')}${v('company') ? `, ${v('company')}` : ''}\n${v('email')}`;
+  location.href = `mailto:${TO}?subject=${encodeURIComponent(`${v('topic')} · ${v('name')}`)}&body=${encodeURIComponent(body)}`;
 });

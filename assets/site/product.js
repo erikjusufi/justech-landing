@@ -1,4 +1,5 @@
-// A JusTech product page, round 9: the product's opening (its figure carved from the field), what it does, its
+// A JusTech product page, round 9 (round 10: the field around the figure fades almost away, so the figure is what
+// you see): the product's opening (its figure carved from the field), what it does, its
 // screen, the other two products as lockups, and the close. The page's product is <body data-prod>.
 import { tfield, reduced } from '../system/tfield.js';
 import { ignite, rel } from '../system/ignite.js';
@@ -25,7 +26,7 @@ for (const sec of document.querySelectorAll('.prod')) {
   const field = tfield(canvas, { cell, weight: 0.24, seed: [((si + 0.5) * cell) / W, ((sj + 0.5) * cell) / H], autoGrow: false, mix: [0.72, 0.9], lit: 0, growMs: 650,
     ink: 'oklch(0.62 0.16 297 / .42)', glow: 'oklch(0.86 0.1 300)', tone: [0.4, 1],
     onLayout() { quiet = [pad(rel(text, sec), 18)]; },
-    mask: (x, y, t, now) => { const dim = dimAt ? 1 - 0.66 * Math.min(1, Math.max(0, now - dimAt) / 600) : 1; return t.shape || t.seed ? 1 : (inside(t, quiet) ? 0.07 : 1) * dim * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 8); },
+    mask: (x, y, t, now) => { const dim = dimAt ? 1 - 0.86 * Math.min(1, Math.max(0, now - dimAt) / 600) : 1; return t.shape || t.seed ? 1 : (inside(t, quiet) ? 0.07 : 1) * dim * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 8); },
     pulses: { every: name === 'ops' ? 700 : 600, max: name === 'ops' ? 3 : 2, ms: 44, trail: 3.4, blur: 12 },
     // the stations' names light while a job is passing
     after() { for (const l of labels) l.classList.toggle('on', l._t.heat > 0.45); return false; } });

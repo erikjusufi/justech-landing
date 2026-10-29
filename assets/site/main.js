@@ -1,4 +1,5 @@
-// JusTech landing, round 9: the five parts Erik kept, from rounds 7 and 8, on the design system.
+// JusTech landing, round 10: the hero, then the two halves of the offer (on the web, with Just App; AI and custom),
+// then Jus. Round 10 keeps the T-field where it means something: the hero, the agent, the ordering.
 import { tfield, reduced } from '../system/tfield.js';
 import { ignite, rel, wait } from '../system/ignite.js';
 import { mark, figure, box } from '../system/figures.js';
@@ -48,17 +49,23 @@ await document.fonts.ready;
     onLayout() { quiet = quietOf(); }, hubOk: t => mask(t.cx / W, t.cy / H, t) > 0.8 && !inside(t, quiet.map(r => pad(r, d.cell))), mask,
     onClick: (x, y, f) => f.burst(f.tileAt(x, y), 5, { color: SIG.t, len: [6, 16] }),
     pulses: { every: 380, max: mobile ? 7 : 12, cap: mobile ? 12 : 20, len: [12, 30], ms: 72, trail: 3, from, onArrive: relay } });
-  const play = () => ignite({ box: hero, T, drop: $('.drop', hero), field, rise: 380, hold: 300 });
+  // round 10 · J3 in the word: the T stands as its left half, the right half falls into place a quarter turn at a time
+  // and locks (the seam flashes), and only then does the T take the light. The halves are two copies of the glyph,
+  // each clipped; once locked, the T is one glyph again, so no seam shows at rest. The copy is made here, so the
+  // page's text stays "JusTech".
+  const half = (cls, txt) => { const e = document.createElement('span'); e.className = `th ${cls}`; e.textContent = txt; return e; };
+  if (!reduced) { const g = T.textContent; T.textContent = ''; T.append(half('a', g)); const b = half('b', g); b.setAttribute('aria-hidden', 'true'); T.append(b); }
+  const FALL = 1450;
+  const play = () => { if (!reduced) { hero.classList.remove('locked'); hero.classList.add('split'); setTimeout(() => { hero.classList.remove('split'); hero.classList.add('locked'); }, 120 + FALL); }
+    return ignite({ box: hero, T, drop: $('.drop', hero), field, rise: FALL + 80, hold: 300 }); };
   play();
 }
 
 
-// 2 · the products in glass: the chosen product's sign drawn above its line as the tabs change (no longer in the
-// blurred field behind; the field there is plain again, as round 7's E4)
+// 2 · Just App in glass: the chosen product's sign drawn above its line as the tabs change. Round 10: no field behind
+// the glass any more, only the violet pool
 {
   const sec = $('.glass');
-  tfield($('canvas', sec), { cell: mobile ? 22 : 30, weight: 0.24, seed: [0.5, 0.0], mix: [0.7, 0.88], lit: 0, ink: 'oklch(0.58 0.16 296 / .2)', glow: 'oklch(0.86 0.1 300 / .5)', growMs: 1800,
-    mask: (x, y) => Math.max(0, 1 - Math.hypot((x - 0.5) * 1.2, (y - 0.55) * 1.05) * 1.4) });
   const m = mark($('.gmark canvas', sec), 'insight', { cell: mobile ? 8 : 10 });
   showcase(sec, { onChange(name) { m.play(name); } });
 }
@@ -68,9 +75,9 @@ await document.fonts.ready;
 {
   const sec = $('.built'), text = $('.btext', sec), region = mobile ? [0.12, 0.6, 0.88, 0.86] : [0.52, 0.22, 0.9, 0.78];
   let quiet = [], labels = [], dimAt = 0;
-  const field = tfield($('canvas', sec), { cell: mobile ? 22 : 30, weight: 0.24, seed: [0.75, 0.5], mix: [0.72, 0.9], lit: 0, growMs: 700, ink: 'oklch(0.62 0.16 297 / .4)', glow: LILAC, tone: [0.4, 1],
+  const field = tfield($('canvas', sec), { cell: mobile ? 22 : 30, weight: 0.24, seed: [0.75, 0.5], mix: [0.72, 0.9], lit: 0, growMs: 700, ink: 'oklch(0.62 0.16 297 / .32)', glow: LILAC, tone: [0.4, 1],
     onLayout() { quiet = [pad(rel(text, sec), 18)]; },
-    mask: (x, y, t, now) => { const dim = dimAt ? 1 - 0.62 * Math.min(1, Math.max(0, now - dimAt) / 700) : 1; return t.shape ? 1 : (inside(t, quiet) ? 0.06 : 1) * dim * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 8); },
+    mask: (x, y, t, now) => { const dim = dimAt ? 1 - 0.86 * Math.min(1, Math.max(0, now - dimAt) / 700) : 1; return t.shape ? 1 : (inside(t, quiet) ? 0.06 : 1) * dim * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 8); },
     pulses: { every: 650, max: 4, ms: 42, trail: 3.4, blur: 12 },
     onGrown(f) {
       const fig = figure(f, 'agent', box(f, region), { speed: 0.5 }); dimAt = performance.now() + (reduced ? -1e5 : 300);
@@ -86,24 +93,23 @@ await document.fonts.ready;
     after() { for (const l of labels) l.classList.toggle('on', l._t.heat > 0.45); return false; } });
 }
 
-// 4 · Jus, over order: as you scroll, every T turns into a weave where every arm meets another
+// 4 · Jus, over order: round 10 puts it in a panel, the field only on the side away from the text, and the field
+// falls into one weave (every arm meeting another) once, as the panel comes into view; no more scrolling through it
 {
   const sec = $('.order'), meter = $('.meter b', sec);
   const ord = t => ((t.i + t.j) % 2 ? 2 : 0);
-  const field = tfield($('canvas', sec), { cell: mobile ? 40 : 56, weight: 0.22, seed: [0.5, 0.5], mix: [1, 1], ink: 'oklch(0.6 0.17 297 / .5)', glow: LILAC, lit: 0, growMs: 900,
-    mask: (x, y) => Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 5),
-    onLayout(f) { const maxD = Math.hypot(f.W, f.H) / 2; f.tiles.forEach(t => { t.th = 0.06 + 0.7 * (Math.hypot(t.cx - f.W / 2, t.cy - f.H / 2) / maxD) * 0.85 + t.rnd * 0.14; t.want = t.home; }); },
+  const side = mobile ? (x, y) => Math.min(1, Math.max(0, (y - 0.56) * 6)) : (x, y) => Math.min(1, Math.max(0, (x - 0.5) * 5));
+  const field = tfield($('canvas', sec), { cell: mobile ? 36 : 48, weight: 0.22, seed: [mobile ? 0.5 : 0.78, mobile ? 0.8 : 0.5], mix: [1, 1], ink: 'oklch(0.6 0.17 297 / .38)', glow: LILAC, lit: 0, growMs: 900,
+    mask: (x, y) => side(x, y) * Math.min(1, Math.min(x, 1 - x, y, 1 - y) * 6),
+    onLayout(f) { f.tiles.forEach(t => { t.th = t.rnd; }); },
     after(ctx, now, f) {
       // the figure: the share of arms, in view, that meet a neighbour's arm
       let all = 0, met = 0; const D = [[0, -1], [1, 0], [0, 1], [-1, 0]];
-      for (const t of f.tiles) { if (t.cx > f.W || t.cy > f.H) continue; const r = Math.round(t.shown);
-        for (const a of [0, 1, 3]) { const dir = (a + ((r % 4) + 4)) % 4, n = f.tiles[(t.j + D[dir][1]) * f.cols + t.i + D[dir][0]]; if (t.i + D[dir][0] < 0 || t.j + D[dir][1] < 0 || !n || n.cx > f.W + f.cell || n.cy > f.H + f.cell) continue; all++;
+      for (const t of f.tiles) { if (t.cx > f.W || t.cy > f.H || side(t.cx / f.W, t.cy / f.H) < 0.5) continue; const r = Math.round(t.shown);
+        for (const a of [0, 1, 3]) { const dir = (a + ((r % 4) + 4)) % 4, n = f.tiles[(t.j + D[dir][1]) * f.cols + t.i + D[dir][0]]; if (t.i + D[dir][0] < 0 || t.j + D[dir][1] < 0 || !n || n.cx > f.W + f.cell || n.cy > f.H + f.cell || side(n.cx / f.W, n.cy / f.H) < 0.5) continue; all++;
           const nr = Math.round(n.shown); if ([0, 1, 3].map(b => (b + ((nr % 4) + 4)) % 4).includes((dir + 2) % 4)) met++; } }
       const v = `${Math.round((100 * met) / Math.max(1, all))} %`; if (meter.textContent !== v) meter.textContent = v;
     } });
-  const update = () => {
-    const b = sec.getBoundingClientRect(), p = Math.min(1, Math.max(0, -b.top / (b.height - innerHeight)));
-    for (const t of field.tiles) { const want = p > t.th ? ord(t) : t.home; if (want !== t.want) { t.want = want; field.set(t, want, 0, want === t.home ? 0 : 0.7); } }
-  };
-  addEventListener('scroll', update, { passive: true }); update();
+  const order = () => { for (const t of field.tiles) field.set(t, ord(t), reduced ? 0 : 500 + t.th * 2200, 0.7); };
+  new IntersectionObserver(([e], o) => { if (e.isIntersecting) { o.disconnect(); order(); } }, { threshold: 0.5 }).observe(sec);
 }

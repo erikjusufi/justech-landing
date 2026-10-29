@@ -122,7 +122,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .close .b-light { background: #fff; color: oklch(0.3 0.15 292); }
 
 @media (max-width: 760px) {
-  .links, .hnav .b-light { display: none; }
+  .links { display: none; }
   .hero { min-height: 0; margin: 0; border-radius: 0 0 26px 26px; }
   .wm { font-size: clamp(72px, 23vw, 100px); }
   .lower { flex-direction: column; align-items: start; gap: 26px; } .lead { font-size: 18px; }
@@ -212,3 +212,81 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .cform .note a { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
 .foot .copy { flex-basis: 100%; }
 @media (max-width: 760px) { .ctop { margin: 0; border-radius: 0 0 26px 26px; } .ctop .cin { grid-template-columns: 1fr; padding-top: 10px; } }
+
+/* round 10 · Just App: the three products as one suite, lightly branded. Its sign is the t of Just, lit, in glass */
+.appmark { display: inline-grid; place-items: center; flex: none; width: 22px; height: 22px; border-radius: 7px; font: normal 760 17px/1 var(--display); font-variation-settings: 'opsz' 96, 'wdth' 82;
+  color: var(--lilac); background: rgba(255,255,255,.1); box-shadow: inset 0 0 0 1px rgba(255,255,255,.2), inset 0 1px 0 rgba(255,255,255,.25); padding-bottom: 2px; }
+.appmark.lg { width: 64px; height: 64px; border-radius: 18px; font-size: 50px; padding-bottom: 5px; text-shadow: 0 0 22px oklch(0.8 0.15 300 / .7);
+  background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.04)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.22), inset 0 1px 0 rgba(255,255,255,.3), 0 14px 34px -14px rgba(20,0,60,.8); }
+.suite { display: flex; align-items: center; gap: 4px; padding: 4px 6px 4px 4px; border-radius: 13px; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); }
+.suite .sl { display: flex; align-items: center; gap: 7px; padding: 0 10px 0 2px; margin-right: 2px; font-weight: 600; color: #fff; border-right: 1px solid rgba(255,255,255,.16); }
+.hnav .suite a { padding: 5px 9px; border-radius: 8px; } .hnav .suite a:hover { background: rgba(255,255,255,.08); }
+.hnav .suite a[aria-current] { box-shadow: none; background: rgba(255,255,255,.14); color: #fff; }
+.links { align-items: center; }
+.hnav .btn.b-light { height: 44px; padding: 0 18px; font-size: 15px; font-weight: 500; }
+.acts { gap: 10px; }
+/* Sign in, larger on Home: the hero's own pair of buttons, Sign in naming where it goes */
+.cta.big .btn { height: 58px; padding: 0 26px; font-size: 17px; border-radius: 16px; }
+.cta.big .b-glass { padding: 0 22px 0 24px; gap: 14px; }
+.si-big span { display: grid; text-align: left; line-height: 1.1; } .si-big small { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.66); font-family: var(--mono); letter-spacing: .01em; }
+.cta.big .b-glass svg { width: 18px; height: 18px; }
+.foot .fl { display: flex; align-items: center; gap: 7px; color: var(--text-2); font-weight: 600; } .foot .fl .appmark { width: 18px; height: 18px; font-size: 14px; border-radius: 5px; }
+
+/* round 10 · the two halves of the offer: a numbered head, a large headline ending in lilac */
+.part { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px clamp(30px, 5vw, 80px); align-items: end; max-width: 1320px; margin: 0 auto; padding: 0 var(--pad); }
+.part .k, .built .k { font-family: var(--mono); font-size: 12.5px; color: var(--lilac); letter-spacing: .02em; }
+.part h2 { margin: 14px 0 0; font-size: clamp(42px, 4.8vw, 72px); line-height: .94; white-space: normal; text-wrap: balance; }
+.part h2 .hl { color: var(--lilac); }
+.pbody p { margin: 0; color: var(--text-2); font-size: 18px; line-height: 1.5; max-width: 470px; text-wrap: pretty; }
+.kinds { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 0; padding: 0; list-style: none; }
+.kinds li { padding: 7px 13px; border-radius: 99px; font-size: 14px; color: var(--text); background: var(--bg-2); box-shadow: inset 0 0 0 1px var(--ring); }
+.kinds li::before { content: ''; display: inline-block; width: 6px; height: 6px; margin: 0 8px 1px 0; background: var(--lilac); }
+.glass { margin-top: clamp(40px, 6vh, 70px); padding-top: 50px; }
+.glass .pool { top: 120px; }
+.apphead { display: flex; align-items: center; gap: 18px; max-width: 1040px; margin: 0 auto 34px; padding: 18px 20px; border-radius: var(--r-3); background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px var(--ring); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.apphead h3 { margin: 0; font-size: clamp(30px, 3.2vw, 44px); line-height: 1; } .apphead h3 .t { color: var(--lilac); }
+.apphead p { margin: 6px 0 0; color: var(--text-2); font-size: 15.5px; }
+.apphead .btn { margin-left: auto; }
+.built h2 { max-width: 13ch; font-size: clamp(42px, 4.8vw, 72px); }
+.ofapp { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 5px 12px 5px 5px; border-radius: 99px; font-size: 13.5px; font-weight: 500; color: var(--text-2); background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px var(--ring); }
+.ofapp:hover { color: var(--text); }
+
+/* round 10 · Jus in a panel; the field only on the side away from the text, falling into order once */
+.order { height: auto; min-height: 600px; margin: 0 var(--pad); border-radius: var(--r-3); overflow: clip; }
+.order .jus { left: clamp(24px, 4.4vw, 64px); background: none; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; padding: 0; max-width: 520px; }
+.order .meter { bottom: 34px; }
+.order .meter { right: clamp(24px, 3vw, 44px); }
+
+@media (max-width: 960px) { .part { grid-template-columns: 1fr; } .apphead { flex-wrap: wrap; } .apphead .btn { margin-left: 0; } }
+@media (max-width: 760px) {
+  .hnav { gap: 10px; } .hnav .brand { font-size: 17px; }
+  .hnav .btn.b-light, .hnav .btn.b-glass { height: 40px; padding: 0 13px; font-size: 14px; } .hnav .b-glass svg { display: none; }
+  .cta.big { flex-wrap: wrap; } .cta.big .btn { height: 54px; font-size: 16px; }
+  .glass { padding-top: 30px; } .apphead { margin-bottom: 24px; padding: 16px; } .appmark.lg { width: 52px; height: 52px; font-size: 40px; border-radius: 15px; }
+  .order { margin: 0 12px; min-height: 700px; border-radius: 22px; } .order .jus { top: 30px; translate: none; left: 20px; right: 20px; } .order .meter { display: block; left: 20px; right: auto; bottom: 20px; }
+}
+
+/* round 10 · the form asks what the enquiry is about: four choices, as glass chips */
+.topic { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.topic legend { padding: 0; margin-bottom: 8px; font-size: 14px; color: rgba(241,237,247,.86); }
+.cform .topic label { display: block; position: relative; }
+.topic input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.topic span { display: block; padding: 8px 13px; border-radius: 99px; font-size: 14px; color: rgba(241,237,247,.8); background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); transition: background .2s, color .2s; }
+.topic input:checked + span { background: #f1edf7; color: oklch(0.3 0.15 292); box-shadow: none; }
+.topic input:focus-visible + span { outline: 2px solid var(--lilac); outline-offset: 2px; }
+
+/* round 10 · J3 in the hero's word: the right half of the T falls and locks before the T lights (main.js) */
+.hero .T { position: relative; display: inline-block; }
+.hero .T .th { display: inline-block; }
+.hero .T .th.b { position: absolute; left: 0; top: 0; visibility: hidden; }
+.hero.split .T .th.a { clip-path: polygon(-60% -60%, 50.4% -60%, 50.4% 160%, -60% 160%); }
+.hero.split .T .th.b { visibility: visible; clip-path: polygon(49.6% -60%, 160% -60%, 160% 160%, 49.6% 160%); transform-origin: 76% 19%; animation: tfall 1.4s both; }
+@keyframes tfall { 0% { transform: translateY(-1.5em) rotate(-270deg); opacity: 0; } 8% { opacity: 1; }
+  22% { transform: translateY(-1.1em) rotate(-270deg); animation-timing-function: cubic-bezier(.2,.9,.25,1); } 30% { transform: translateY(-.8em) rotate(-180deg); }
+  48% { transform: translateY(-.6em) rotate(-180deg); } 56% { transform: translateY(-.32em) rotate(-90deg); } 72% { transform: translateY(-.2em) rotate(-90deg); animation-timing-function: cubic-bezier(.55,0,.9,.4); }
+  88% { transform: none; } 94% { transform: translateY(.02em); } 100% { transform: none; } }
+/* the seam flashes as the half locks */
+.hero .T::after { content: ''; position: absolute; left: calc(50% - .015em); width: .03em; top: 11.5%; bottom: 11.5%; background: #fff; border-radius: 1px; opacity: 0; pointer-events: none;
+  box-shadow: 0 0 .06em #fff, 0 0 .2em oklch(0.85 0.12 300); }
+.hero.split .T::after { animation: seam 1.4s ease both; }
+@keyframes seam { 0%, 87% { opacity: 0; } 92% { opacity: 1; } 100% { opacity: 0; } }

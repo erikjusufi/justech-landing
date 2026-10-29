@@ -21,8 +21,9 @@
   <canvas aria-hidden="true"></canvas>
   <nav class="hnav" aria-label="Main">
     <a class="brand" href="../"><svg class="mark" aria-hidden="true"><use href="#mark-on-violet"/></svg>JusTech</a>
-    <div class="links"><a href="../">Home</a><a href="../insight/">Just Insight</a><a href="../content/">Just Content</a><a href="../ops/">Just Ops</a></div>
-    <div class="acts"><a class="btn b-glass" href="https://app.justech.uk">Sign in <svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a></div>
+    <div class="links"><a href="../">Home</a>
+      <div class="suite" role="group" aria-label="Just App"><span class="sl"><i class="appmark" aria-hidden="true">t</i>Just App</span><a href="../insight/">Insight</a><a href="../content/">Content</a><a href="../ops/">Ops</a></div></div>
+    <div class="acts"><a class="btn b-light" href="../contact/" aria-current="page">Talk to us</a><a class="btn b-glass" href="https://app.justech.uk">Sign in <svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a></div>
   </nav>
   <div class="cin">
     <h1 class="display">Tell us what you’re building.</h1>
@@ -30,6 +31,11 @@
       <label><span>Name</span><input name="name" autocomplete="name" required></label>
       <label><span>Email</span><input name="email" type="email" autocomplete="email" required></label>
       <label><span>Company <i>optional</i></span><input name="company" autocomplete="organization"></label>
+      <fieldset class="topic"><legend>What is it about?</legend>
+        <label><input type="radio" name="topic" value="A website or web application" checked><span>A website or web app</span></label>
+        <label><input type="radio" name="topic" value="An AI system"><span>An AI system</span></label>
+        <label><input type="radio" name="topic" value="A custom application"><span>A custom application</span></label>
+        <label><input type="radio" name="topic" value="Something else"><span>Something else</span></label></fieldset>
       <label><span>What are you building?</span><textarea name="what" rows="5" required></textarea></label>
       <div class="send"><button class="btn b-light" type="submit" id="talk">Send <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg></button>
         <p class="note" id="note">Opens your email app with the message ready. Or write to <a href="mailto:info@justech.uk">info@justech.uk</a>.</p></div>
@@ -39,7 +45,7 @@
 
 <footer class="foot">
   <a class="brand" href="../"><svg class="mark" aria-hidden="true"><use href="#mark"/></svg>JusTech</a>
-  <nav aria-label="Products"><a href="../insight/">Just Insight</a><a href="../content/">Just Content</a><a href="../ops/">Just Ops</a><a href="../contact/">Talk to us</a></nav>
+  <nav aria-label="Footer"><span class="fl"><i class="appmark" aria-hidden="true">t</i>Just App</span><a href="../insight/">Insight</a><a href="../content/">Content</a><a href="../ops/">Ops</a><a href="../contact/">Talk to us</a></nav>
   <a class="btn b-glass si" href="https://app.justech.uk">Sign in <svg viewBox="0 0 16 16"><path d="M7 3H12.5v10H7M2.5 8h7M7 5.5 9.5 8 7 10.5"/></svg></a>
   <span class="copy">© 2026 JusTech. Zagreb, Croatia.</span>
 </footer>
