@@ -4,7 +4,8 @@
 //                      info@justech.uk, Erik's inbox) and CONTACT_FROM (default JusTech <hello@notify.justech.uk>, the
 //                      notify.justech.uk domain in Resend, EU) optional. Reply-To is the visitor. Until the key is set it
 //                      answers 503 and the page opens the visitor's email app instead. The mail is branded HTML with
-//                      a plain-text part, from the shared layout in server/mail (JustApp copies it, D-53).
+//                      a plain-text part, from the shared layout in server/mail (JustApp copies it, D-53). The visitor then
+//                      gets one fixed thank-you (never their words), within limits (mayThank).
 //   POST /api/e        JustInsight's same-origin proxy (justech-analytics INGEST-CONTRACT §5, ARCHITECTURE §1): the
 //                      beacon goes to the collector with the visitor's address and country as X-JT-IP and
 //                      X-JT-Country, from Cloudflare's CF-Connecting-IP and CF-IPCountry; always 204.
@@ -12,7 +13,7 @@
 import { createServer } from 'node:http';
 import { stat, readFile } from 'node:fs/promises';
 import { join, normalize, extname } from 'node:path';
-import { contactMail } from './mail/mail.mjs';
+import { contactMail, thanksMail } from './mail/mail.mjs';
 
 const ROOT = process.env.SITE_ROOT || '/srv/site';
 // The port belongs to the image (EXPOSE and HEALTHCHECK say 8080), so the generic PORT is ignored: Coolify sets it from
@@ -41,7 +42,19 @@ const body = (req, max) => new Promise((ok, no) => { const parts = []; let n = 0
 const MAX = { name: 200, email: 200, company: 200, topic: 100, message: 5000 };
 const clean = (v, n) => String(v ?? '').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '').trim().slice(0, n);
 // the mail is filled once at start, so a broken layout stops the server (and CI) instead of a visitor's message
-contactMail({ name: 'Ana', email: 'ana@example.com', company: '', topic: '', message: 'check' });
+contactMail({ name: 'Ana', email: 'ana@example.com', company: '', topic: '', message: 'check' }); const THANKS = thanksMail();
+// the visitor's confirmation goes only after our own mail went, and only within limits, so the form cannot be used to
+// send mail to strangers in any number: one per address a day, three per visitor an hour, thirty a day in all
+const LIMIT = { address: 24 * 3600e3, ipPerHour: 3, perDay: 30 };
+const sentTo = new Map(), sentFrom = new Map(); let day = '', today = 0;
+function mayThank(email, ip, now = Date.now()) {
+  const d = new Date(now).toISOString().slice(0, 10); if (d !== day) { day = d; today = 0; sentTo.clear(); }
+  const a = email.toLowerCase(), hour = (sentFrom.get(ip) || []).filter(t => now - t < 3600e3);
+  if (today >= LIMIT.perDay || now - (sentTo.get(a) || -Infinity) < LIMIT.address || hour.length >= LIMIT.ipPerHour) return false;
+  today++; sentTo.set(a, now); sentFrom.set(ip, [...hour, now]); return true;
+}
+const resend = (key, mail) => fetch(RESEND, { method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(10000),
+  body: JSON.stringify({ from: process.env.CONTACT_FROM || 'JusTech <hello@notify.justech.uk>', ...mail }) });
 async function contact(req, res) {
   const origin = req.headers.origin;
   if (origin) { try { if (new URL(origin).host !== req.headers.host) return json(res, 403, 'origin'); } catch { return json(res, 403, 'origin'); } }
@@ -54,10 +67,13 @@ async function contact(req, res) {
   if (!key) return json(res, 503, 'not configured');
   const mail = contactMail(f); // the branded HTML and its plain text (server/mail)
   try {
-    const r = await fetch(RESEND, { method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(10000),
-      body: JSON.stringify({ from: process.env.CONTACT_FROM || 'JusTech <hello@notify.justech.uk>', to: [to], reply_to: f.email,
-        subject: mail.subject, html: mail.html, text: mail.text }) });
-    if (r.ok) return json(res, 200);
+    const r = await resend(key, { to: [to], reply_to: f.email, subject: mail.subject, html: mail.html, text: mail.text });
+    if (r.ok) {
+      if (mayThank(f.email, req.headers['cf-connecting-ip'] || req.socket.remoteAddress || ''))
+        resend(key, { to: [f.email], reply_to: to, subject: THANKS.subject, html: THANKS.html, text: THANKS.text })
+          .then(t => t.ok || console.error('thanks: resend answered', t.status)).catch(e => console.error('thanks: resend unreachable', e.message));
+      return json(res, 200);
+    }
     console.error('contact: resend answered', r.status, (await r.text()).slice(0, 300));
   } catch (e) { console.error('contact: resend unreachable', e.message); }
   return json(res, 502, 'send');

@@ -36,3 +36,12 @@ export const contactMail = f => compose({
   kicker: 'Talk to us · justech.uk', title: f.topic || 'Enquiry', preheader: `${f.name}: ${f.message.slice(0, 90)}`,
   parts: [rows([['Name', f.name], ...(f.company ? [['Company', f.company]] : []), ['Email', f.email, `mailto:${f.email}`]]), quote(f.message)],
   footer: `Sent from the form on justech.uk. Reply to answer ${f.name} directly.` });
+
+// the visitor's confirmation (Erik, 30 Oct): one fixed text for everyone, never their name or their words, so a
+// stranger's address typed into the form can receive nothing but this; the server limits how often it goes
+export const thanksMail = () => compose({
+  subject: 'We have your message · JusTech',
+  kicker: 'justech.uk', title: 'Thank you for your enquiry.', preheader: 'We will answer as soon as we can, from info@justech.uk.',
+  parts: [para('We have received your message and will answer as soon as we can, from info@justech.uk.'),
+    para('If you did not write to us, please ignore this e-mail.')],
+  footer: 'You receive this because this address was entered in the contact form on justech.uk.' });
