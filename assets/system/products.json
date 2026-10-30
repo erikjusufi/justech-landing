@@ -5,6 +5,7 @@
       "name": "JusT Insight",
       "word": "Insight",
       "line": "What happened on your site, and why, in plain words.",
+      "line_hr": "Što se dogodilo na vašoj stranici i zašto, jednostavnim riječima.",
       "points": [
         [
           "One sentence first",
@@ -26,6 +27,7 @@
       "name": "JusT Content",
       "word": "Content",
       "line": "Change your site yourself, in its own look, without breaking it.",
+      "line_hr": "Sami uređujete svoju stranicu, u njezinu stilu, a da je ne pokvarite.",
       "points": [
         [
           "In your site’s own look",
@@ -43,6 +45,7 @@
       "name": "JusT Ops",
       "word": "Ops",
       "line": "Your site up, renewed and backed up, checked every night.",
+      "line_hr": "Stranica radi, obnovljena je i ima sigurnosnu kopiju, a provjeravamo je svake noći.",
       "points": [
         [
           "Checked every night",

@@ -685,3 +685,20 @@ html.snapping { scroll-snap-type: y proximity; }
 @media (min-width: 901px) { .order .jus { grid-row: 1; } .order .proof { grid-column: 2; grid-row: 1 / span 2; } .order .end { grid-row: 2; align-self: start; } }
 .hnav.beat::after { animation: navbeat 1.1s var(--ease); }
 @keyframes navbeat { 0% { box-shadow: 0 0 10px oklch(0.8 0.15 300 / .6); } 22% { box-shadow: 0 0 22px 3px oklch(0.85 0.16 300 / .95), 0 0 4px #fff; height: 3px; } 100% { box-shadow: 0 0 10px oklch(0.8 0.15 300 / .6); } }
+
+/* round 20 · the privacy page: a short violet head with a still field, then the text at a reading measure on the
+   ground; and the footer's legal line under the year */
+.legal-top { min-height: 0; }
+.legal-top .cin { padding-top: clamp(40px, 8vh, 90px); padding-bottom: clamp(40px, 7vh, 72px); }
+.legal-top .k { margin: 0 0 12px; font-family: var(--mono); font-size: 13px; color: var(--lilac); }
+.legal-top h1 { margin: 0; font-size: clamp(56px, 8vw, 112px); line-height: .95; letter-spacing: -0.04em; }
+.legal-top .lead { margin: 18px 0 0; font-family: var(--mono); font-size: 13px; color: rgba(241,237,247,.8); }
+.legal { box-sizing: border-box; width: min(100% - 2 * var(--pad), 720px); margin: clamp(40px, 7vh, 72px) auto clamp(56px, 9vh, 96px); font-size: 17px; line-height: 1.65; color: var(--text-2); }
+.legal .intro { font-size: 20px; line-height: 1.5; color: var(--text); }
+.legal h2 { margin: 44px 0 12px; font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.15; letter-spacing: -0.02em; color: var(--text); }
+.legal p { margin: 0 0 14px; } .legal b { color: var(--text); font-weight: 600; }
+.legal ul { margin: 0 0 14px; padding-left: 20px; } .legal li { margin: 0 0 6px; } .legal li::marker { color: var(--lilac); }
+.legal a { color: var(--lilac); text-underline-offset: 3px; }
+.foot .legal-line { display: block; margin-top: -6px; font-size: 12.5px; line-height: 1.5; color: var(--text-3); }
+.foot .legal-line a { color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--ring); }
+.foot .legal-line a:hover, .foot .legal-line a[aria-current] { color: var(--text); }
