@@ -24,7 +24,7 @@ canvas { display: block; }
 .field-dark { position: relative; isolation: isolate; background: radial-gradient(70% 90% at 70% 100%, oklch(0.3 0.13 293 / .5), transparent 70%), var(--bg-2); box-shadow: 0 0 0 1px var(--ring); }
 
 /* display type: a word set in Bricolage, heavy and narrowed */
-.display { font-family: var(--display); font-weight: 760; line-height: .86; letter-spacing: -0.045em; font-variation-settings: var(--display-axes); white-space: nowrap; }
+.display { font-family: var(--display); font-weight: 760; line-height: .86; letter-spacing: -0.045em; white-space: nowrap; }
 .display span { display: inline-block; }
 
 /* ignition (ignite.js): the letters rise, the T takes the light first, blooms white, drops a spark into the field,
