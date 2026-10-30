@@ -9,6 +9,7 @@ code() { curl -s -o /dev/null -w '%{http_code}' "$@"; }
 check 'GET /' 200 "$(code "$B/")"
 check '/ is the landing' 1 "$(curl -s "$B/" | grep -c '<title>JusTech · ')"
 check 'GET /insight/' 200 "$(code "$B/insight/")"
+check 'GET /privacy/' 200 "$(code "$B/privacy/")"
 check 'GET /insight -> /insight/' 301 "$(code "$B/insight")"
 check 'GET /healthz' ok "$(curl -s "$B/healthz")"
 check 'GET a missing page' 404 "$(code "$B/no/such/page")"

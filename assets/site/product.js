@@ -1,11 +1,11 @@
 // A JusTech product page, round 9 (round 10: the field around the figure fades almost away, so the figure is what
 // you see): the product's opening (its figure carved from the field), what it does, its
 // screen, the other two products as lockups, and the close. The page's product is <body data-prod>.
-import './mnav.js?v=d550cc9b314e'; // round 17e: the small navigation on phones
-import { tfield, reduced } from '../system/tfield.js?v=d550cc9b314e';
-import { ignite, rel } from '../system/ignite.js?v=d550cc9b314e';
-import { FIGURES, figure, box, mark } from '../system/figures.js?v=d550cc9b314e';
-import { mount, play as playScreen } from '../shared/screens.js?v=d550cc9b314e';
+import './mnav.js?v=27f3e66b2e59'; // round 17e: the small navigation on phones
+import { tfield, reduced } from '../system/tfield.js?v=27f3e66b2e59';
+import { ignite, rel } from '../system/ignite.js?v=27f3e66b2e59';
+import { FIGURES, figure, box, mark } from '../system/figures.js?v=27f3e66b2e59';
+import { mount, play as playScreen } from '../shared/screens.js?v=27f3e66b2e59';
 const $ = (s, r = document) => r.querySelector(s);
 const mobile = matchMedia('(max-width: 760px)').matches;
 const LILAC = getComputedStyle(document.documentElement).getPropertyValue('--sig-t').trim();
