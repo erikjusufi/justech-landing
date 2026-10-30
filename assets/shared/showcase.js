@@ -2,7 +2,7 @@
 // 8 s until a visitor chooses a tab, and never moves under prefers-reduced-motion. Arrow keys move between tabs.
 // Landing round 17f: `auto: false` turns the advancing off (phones: the visitor chooses), and it pauses while the
 // showcase is off screen (it used to keep turning, so the page below it moved while someone read further down).
-import { mount, play } from './screens.js?v=27f3e66b2e59';
+import { mount, play } from './screens.js?v=483cb8ec8c36';
 export function showcase(root, { onChange, auto: autoOn = true } = {}) {
   const tabs = [...root.querySelectorAll('[role=tab]')], lines = [...root.querySelectorAll('[data-line]')];
   const stage = mount(root.querySelector('[data-stage]'));

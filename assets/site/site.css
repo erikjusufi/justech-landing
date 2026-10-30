@@ -51,7 +51,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .lockup { display: flex; align-items: center; gap: clamp(16px, 3vw, 36px); padding: 22px clamp(18px, 3vw, 36px); border-radius: var(--r-3); background: var(--bg-2); box-shadow: 0 0 0 1px var(--ring); }
 .lockup canvas { width: 220px; height: 132px; flex: none; }
 .lockup h3 { margin: 0; font-size: clamp(40px, 5.4vw, 76px); }
-.lockup h3 .t { color: var(--lilac); }
+.lockup h3 /* it is part of the word: whatever spans around it are styled as, it takes nothing but the colour */
+span.t.t { all: unset; color: var(--lilac); }
 .lockup p { margin: 10px 0 0; color: var(--text-2); font-size: 16px; max-width: 420px; }
 .gmark { display: flex; justify-content: center; margin-top: 26px; } .gmark canvas { width: 240px; height: 110px; }
 .glass .pline { margin-top: 10px; }
@@ -244,7 +245,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 20px; }
 .glass { margin-top: clamp(40px, 6vh, 70px); padding-top: 50px; }
 .glass .pool { top: 120px; }
 .apphead { display: flex; align-items: center; gap: 18px; max-width: 1040px; margin: 0 auto 34px; padding: 18px 20px; border-radius: var(--r-3); background: rgba(255,255,255,.04); box-shadow: inset 0 0 0 1px var(--ring); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-.apphead h3 { margin: 0; font-size: clamp(30px, 3.2vw, 44px); line-height: 1; } .apphead h3 .t { color: var(--lilac); }
+.apphead h3 { margin: 0; font-size: clamp(30px, 3.2vw, 44px); line-height: 1; } .apphead h3 /* it is part of the word: whatever spans around it are styled as, it takes nothing but the colour */
+span.t.t { all: unset; color: var(--lilac); }
 .apphead p { margin: 6px 0 0; color: var(--text-2); font-size: 15.5px; }
 .apphead .btn { margin-left: auto; }
 .built h2 { max-width: 13ch; font-size: clamp(42px, 4.8vw, 72px); }
@@ -702,3 +704,7 @@ html.snapping { scroll-snap-type: y proximity; }
 .foot .legal-line { display: block; margin-top: -6px; font-size: 12.5px; line-height: 1.5; color: var(--text-3); }
 .foot .legal-line a { color: var(--text-2); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--ring); }
 .foot .legal-line a:hover, .foot .legal-line a[aria-current] { color: var(--text); }
+
+/* round 20 · the T of JusT in the accent colour wherever a product's name stands, not only in the lockups (Erik) */
+/* it is part of the word: whatever spans around it are styled as, it takes nothing but the colour */
+span.t.t { all: unset; color: var(--lilac); }
