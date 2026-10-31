@@ -4,8 +4,9 @@
 //                      info@justech.uk, Erik's inbox) and CONTACT_FROM (default JusTech <hello@notify.justech.uk>, the
 //                      notify.justech.uk domain in Resend, EU) optional. Reply-To is the visitor. Until the key is set it
 //                      answers 503 and the page opens the visitor's email app instead. The mail is branded HTML with
-//                      a plain-text part, from the shared layout in server/mail (JustApp copies it, D-53). The visitor then
-//                      gets one fixed thank-you (never their words), within limits (mayThank).
+//                      a plain-text part, from the shared layout in server/mail (JustApp copies it, D-53). The visitor's
+//                      fixed thank-you (never their words, within limits: mayThank) goes only with CONTACT_THANKS=on;
+//                      off by default (Erik, 31 Oct: only with Turnstile and the rate limit live).
 //   POST /api/e        JustInsight's same-origin proxy (justech-analytics INGEST-CONTRACT §5, ARCHITECTURE §1): the
 //                      beacon goes to the collector with the visitor's address and country as X-JT-IP and
 //                      X-JT-Country, from Cloudflare's CF-Connecting-IP and CF-IPCountry; always 204.
@@ -26,7 +27,9 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=
   '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon',
   '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8' };
 const SECURITY = { 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Frame-Options': 'DENY',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()' };
+  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
+  // styles keep 'unsafe-inline' only for the style="--k:…" attributes, until those move into classes (Erik, 31 Oct)
+  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'" };
 // fonts never change; the tracker's URL carries its md5; CSS and JS are not fingerprinted, so an hour; pages revalidate
 const cacheFor = p => p.startsWith('/assets/system/fonts/') || p === '/jt.js' ? 'public, max-age=31536000, immutable'
   : p.startsWith('/assets/') ? 'public, max-age=3600, stale-while-revalidate=86400'
@@ -69,7 +72,7 @@ async function contact(req, res) {
   try {
     const r = await resend(key, { to: [to], reply_to: f.email, subject: mail.subject, html: mail.html, text: mail.text });
     if (r.ok) {
-      if (mayThank(f.email, req.headers['cf-connecting-ip'] || req.socket.remoteAddress || ''))
+      if (process.env.CONTACT_THANKS === 'on' && mayThank(f.email, req.headers['cf-connecting-ip'] || req.socket.remoteAddress || ''))
         resend(key, { to: [f.email], reply_to: to, subject: THANKS.subject, html: THANKS.html, text: THANKS.text })
           .then(t => t.ok || console.error('thanks: resend answered', t.status)).catch(e => console.error('thanks: resend unreachable', e.message));
       return json(res, 200);

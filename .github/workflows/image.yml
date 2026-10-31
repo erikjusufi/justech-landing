@@ -18,6 +18,8 @@ jobs:
         run: |
           printf 'services: {}\n' > docker-compose.yaml; printf 'RESEND_API_KEY=decoy\n' > .env; printf 'X=1\n' > .env.production
           mkdir -p .nixpacks docs tests; touch .nixpacks/plan.json docs/notes.md tests/x.sh
+      - name: The contact form against stand-ins for Resend (no mail leaves)
+        run: node server/contact.test.mjs
       - name: Build the image
         run: docker build -t justech-site .
       - name: The image holds the site and its server, nothing else

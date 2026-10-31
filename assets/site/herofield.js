@@ -2,8 +2,8 @@
 // densest, signals from many sources, and J3 in the lit T (its right half falls into place before it lights).
 // `box` carries [data-ignite] and holds a canvas, a .drop and the letters (.ch, the one that lights .T); `quiet` are the
 // elements the field goes quiet behind.
-import { tfield, reduced } from '../system/tfield.js?v=5b615a97f290';
-import { ignite, rel, wait } from '../system/ignite.js?v=5b615a97f290';
+import { tfield, reduced } from '../system/tfield.js?v=a31ae76f16f4';
+import { ignite, rel, wait } from '../system/ignite.js?v=a31ae76f16f4';
 const mobile = matchMedia('(max-width: 760px)').matches;
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const inside = (t, rs) => rs.some(r => t.cx > r.x && t.cx < r.x + r.w && t.cy > r.y && t.cy < r.y + r.h);

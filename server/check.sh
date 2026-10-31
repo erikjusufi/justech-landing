@@ -16,6 +16,7 @@ check 'GET a missing page' 404 "$(code "$B/no/such/page")"
 check 'the 404 page' 1 "$(curl -s "$B/no/such/page" | grep -c '<title>Not found · JusTech</title>')"
 check 'font cache' 'public, max-age=31536000, immutable' "$(curl -s -o /dev/null -w '%header{cache-control}' "$B/assets/system/fonts/BricolageGrotesque-Variable.woff2")"
 check 'nosniff' nosniff "$(curl -s -o /dev/null -w '%header{x-content-type-options}' "$B/")"
+check 'CSP on the page' 1 "$(curl -s -o /dev/null -w '%header{content-security-policy}' "$B/" | grep -c "script-src 'self'; style-src 'self' 'unsafe-inline'")"
 check 'the server is not served' 404 "$(code "$B/server/server.mjs")"
 # nothing but the site (30 Oct: Coolify's docker-compose.yaml answered 200); on justech.uk any of these failing means
 # a leak, and a 200 for .env means the key in it is rotated
