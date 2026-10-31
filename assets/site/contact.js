@@ -1,8 +1,8 @@
 // The contact page: the form, on the hero's field. Round 17: Send posts the form to /api/contact (a Cloudflare Pages
 // Function that mails it through Resend); if that cannot take it (not deployed, not configured, offline), Send falls
 // back to what it did before: the visitor's email app opens with the message written.
-import './mnav.js?v=a31ae76f16f4'; // round 17e: the small navigation on phones
-import { heroField } from './herofield.js?v=a31ae76f16f4';
+import './mnav.js?v=4e4c94896908'; // round 17e: the small navigation on phones
+import { heroField } from './herofield.js?v=4e4c94896908';
 const $ = (s, r = document) => r.querySelector(s);
 const TO = 'info@justech.uk';
 await document.fonts.ready;
@@ -12,6 +12,25 @@ await document.fonts.ready;
 {
   const box = $('.ctop');
   heroField(box, { quiet: [$('h1', box), $('#form', box), document.querySelector('.hnav')] });
+}
+
+// Turnstile, only once the server has its keys; the widget shows itself only if Cloudflare needs the visitor to act
+let widget = null;
+fetch('/api/contact/config').then(r => r.json()).then(({ turnstile: sitekey }) => {
+  if (!sitekey) return;
+  const s = document.createElement('script');
+  s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+  s.onload = () => { widget = window.turnstile.render('#ts', { sitekey, theme: 'dark', size: 'flexible', appearance: 'interaction-only' }); };
+  document.head.append(s);
+}).catch(() => {});
+// the check runs on its own; a few seconds for it to finish, and without a token the server says no and the email app opens
+async function tokenFor() {
+  for (let i = 0; widget !== null && i < 40; i++) {
+    const t = window.turnstile.getResponse(widget);
+    if (t) return t;
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return '';
 }
 
 // Send: check the fields, post them, and say what happened; the email app only if the post does not go through
@@ -24,9 +43,11 @@ form.addEventListener('submit', async e => {
   const v = n => f.elements[n].value.trim();
   const data = { name: v('name'), email: v('email'), company: v('company'), topic: v('topic'), message: v('what'), website: v('website') };
   btn.disabled = true; btn.firstChild.textContent = 'Sending ';
+  data.turnstile = await tokenFor();
   let ok = false;
   try { const r = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); ok = r.ok; } catch { ok = false; }
   btn.disabled = false; btn.firstChild.textContent = 'Send ';
+  if (widget !== null) window.turnstile.reset(widget); // a token works once
   if (ok) { form.hidden = true; const s = $('#sent'); s.hidden = false; s.focus(); return; }
   note.innerHTML = `Our form could not send it, so your email app opens with the message ready. Or write to <a href="mailto:${TO}">${TO}</a>.`;
   const body = `${data.topic}\n\n${data.message}\n\n${data.name}${data.company ? `, ${data.company}` : ''}\n${data.email}`;
