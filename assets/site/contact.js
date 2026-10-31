@@ -1,8 +1,8 @@
 // The contact page: the form, on the hero's field. Round 17: Send posts the form to /api/contact (a Cloudflare Pages
 // Function that mails it through Resend); if that cannot take it (not deployed, not configured, offline), Send falls
 // back to what it did before: the visitor's email app opens with the message written.
-import './mnav.js?v=83a88a260e81'; // round 17e: the small navigation on phones
-import { heroField } from './herofield.js?v=83a88a260e81';
+import './mnav.js?v=c6c1bdc52004'; // round 17e: the small navigation on phones
+import { heroField } from './herofield.js?v=c6c1bdc52004';
 const $ = (s, r = document) => r.querySelector(s);
 const TO = 'info@justech.uk';
 await document.fonts.ready;
@@ -15,17 +15,18 @@ await document.fonts.ready;
 }
 
 // Turnstile, only once the server has its keys; the widget shows itself only if Cloudflare needs the visitor to act
-let widget = null;
+let widget = null, asked = false;
 fetch('/api/contact/config').then(r => r.json()).then(({ turnstile: sitekey }) => {
   if (!sitekey) return;
   const s = document.createElement('script');
   s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
-  s.onload = () => { widget = window.turnstile.render('#ts', { sitekey, theme: 'dark', size: 'flexible', appearance: 'interaction-only' }); };
+  s.onload = () => { widget = window.turnstile.render('#ts', { sitekey, theme: 'dark', size: 'flexible', appearance: 'interaction-only', 'before-interactive-callback': () => { asked = true; } }); };
   document.head.append(s);
 }).catch(() => {});
-// the check runs on its own; a few seconds for it to finish, and without a token the server says no and the email app opens
+// the check runs on its own: a few seconds for it to finish, a minute if it asks the visitor to act; without a token the
+// server says no and the email app opens
 async function tokenFor() {
-  for (let i = 0; widget !== null && i < 40; i++) {
+  for (let i = 0; widget !== null && i < (asked ? 300 : 40); i++) {
     const t = window.turnstile.getResponse(widget);
     if (t) return t;
     await new Promise(r => setTimeout(r, 200));

@@ -10,7 +10,7 @@
 //   Ops:     checked every night (round 19). A steady pulse, a beat a night, tonight's in white; under tonight's beat
 //            its checks (up, renewed, backed up, checked) hang down as branches, as the Ops screen lists them.
 // `g` is the grid box the figure fills: { i0, i1, j0, j1 } in cells. Shapes are drawn from demo ideas, not data.
-import { tfield, reduced } from './tfield.js?v=83a88a260e81';
+import { tfield, reduced } from './tfield.js?v=c6c1bdc52004';
 const LILAC = 'oklch(0.86 0.1 300)', WHITE = '#f6f2fb', DIM = 'oklch(0.7 0.13 298 / .7)', ORCHID = 'oklch(0.8 0.14 322)';
 const span = (a, b) => { const o = []; for (let k = a; a <= b ? k <= b : k >= b; k += a <= b ? 1 : -1) o.push(k); return o; };
 
