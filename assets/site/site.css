@@ -229,7 +229,7 @@ span.t.t { all: unset; color: var(--lilac); }
 /* Sign in, larger on Home: the hero's own pair of buttons, Sign in naming where it goes */
 .cta.big .btn { height: 58px; padding: 0 26px; font-size: 17px; border-radius: 16px; }
 .cta.big .b-glass { padding: 0 22px 0 24px; gap: 14px; }
-.si-big span { display: grid; text-align: left; line-height: 1.1; } .si-big small { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.66); font-family: var(--mono); letter-spacing: .01em; }
+.si-big > span { display: grid; text-align: left; line-height: 1.1; } .si-big small { font-size: 12px; font-weight: 500; color: rgba(255,255,255,.66); font-family: var(--mono); letter-spacing: .01em; }
 .cta.big .b-glass svg { width: 18px; height: 18px; }
 .foot .fl { display: flex; align-items: center; gap: 7px; color: var(--text-2); font-weight: 600; } .foot .fl .appmark { width: 18px; height: 18px; font-size: 14px; border-radius: 5px; }
 
