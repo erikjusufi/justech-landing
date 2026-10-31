@@ -4,9 +4,10 @@
 # app), CONTACT_TO (default info@justech.uk) and CONTACT_FROM optional.
 FROM node:22-alpine
 WORKDIR /srv
+# .dockerignore lets in only the built site and its server, so nothing Coolify writes into the build context (its
+# docker-compose.yaml, .env) is in the image; the server then serves only the files it finds here at start
 COPY . /srv/site
-RUN mv /srv/site/server/server.mjs /srv/server.mjs && mv /srv/site/server/mail /srv/mail \
- && rm -rf /srv/site/server /srv/site/Dockerfile /srv/site/.dockerignore /srv/site/README.md
+RUN mv /srv/site/server/server.mjs /srv/server.mjs && mv /srv/site/server/mail /srv/mail && rm -rf /srv/site/server
 ENV NODE_ENV=production SITE_PORT=8080 SITE_ROOT=/srv/site
 USER node
 EXPOSE 8080

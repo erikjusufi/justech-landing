@@ -1,3 +1,20 @@
-.git
-.gitignore
-README.md
+# Only the built site and its server enter the image: everything is left out, then the site's own entries are let in.
+# Whatever else lands in the build context stays out without being named: Coolify's docker-compose.yaml and .env (30 Oct:
+# /docker-compose.yaml answered 200), .git, .github, .nixpacks, docs, tests. A new page directory is added here, and the
+# image job fails until it is (its pages answer 404).
+*
+!index.html
+!404.html
+!favicon.svg
+!og.png
+!robots.txt
+!sitemap.xml
+!jt.js
+!assets/
+!contact/
+!content/
+!insight/
+!ops/
+!privacy/
+!server/server.mjs
+!server/mail/

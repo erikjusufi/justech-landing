@@ -17,6 +17,11 @@ check 'the 404 page' 1 "$(curl -s "$B/no/such/page" | grep -c '<title>Not found 
 check 'font cache' 'public, max-age=31536000, immutable' "$(curl -s -o /dev/null -w '%header{cache-control}' "$B/assets/system/fonts/BricolageGrotesque-Variable.woff2")"
 check 'nosniff' nosniff "$(curl -s -o /dev/null -w '%header{x-content-type-options}' "$B/")"
 check 'the server is not served' 404 "$(code "$B/server/server.mjs")"
+# nothing but the site (30 Oct: Coolify's docker-compose.yaml answered 200); on justech.uk any of these failing means
+# a leak, and a 200 for .env means the key in it is rotated
+for p in docker-compose.yaml docker-compose.yml .env .env.production .git/HEAD .github/workflows/image.yml .nixpacks/ docs/ tests/ Dockerfile .dockerignore README.md server/check.sh; do
+  check "not served: /$p" 404 "$(code "$B/$p")"
+done
 if [ "$CONTACT" != skip ]; then
   check "POST /api/contact" "$CONTACT" "$(code -X POST -H 'Content-Type: application/json' -d '{"name":"CI","email":"ci@example.com","message":"check","topic":"Something else"}' "$B/api/contact")"
 fi
