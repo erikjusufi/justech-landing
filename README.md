@@ -19,6 +19,10 @@ and:
   Reply-To the visitor, to info@justech.uk. Environment: `RESEND_API_KEY` (a secret; required); `CONTACT_TO`
   (default info@justech.uk) and `CONTACT_FROM` (default `JusTech <hello@notify.justech.uk>`) optional. Until the key
   is set it answers 503 and the form opens the visitor's email app instead.
+  Five tries an hour per visitor's address and fifty accepted a day (in memory; a deploy starts them again).
+  Cloudflare Turnstile once `TURNSTILE_SITE_KEY` and the runtime secret `TURNSTILE_SECRET_KEY` are both set; without
+  them the form works without it. The visitor's fixed thank-you goes only with Turnstile live and `CONTACT_THANKS=on`.
+  Whenever the post does not go through, the form opens the visitor's email app, so a message is never lost.
 - `POST /api/e`: JustInsight's same-origin proxy to `insight.justech.uk/ingest`, with `X-JT-IP` and `X-JT-Country`
   from Cloudflare's `CF-Connecting-IP` and `CF-IPCountry`. `jt.js` is the tracker, byte for byte. The pages carry its
   tag once the site's key from JustApp Admin is put in `insight.json` beside `build.py` and the site is rebuilt.

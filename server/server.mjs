@@ -4,9 +4,12 @@
 //                      info@justech.uk, Erik's inbox) and CONTACT_FROM (default JusTech <hello@notify.justech.uk>, the
 //                      notify.justech.uk domain in Resend, EU) optional. Reply-To is the visitor. Until the key is set it
 //                      answers 503 and the page opens the visitor's email app instead. The mail is branded HTML with
-//                      a plain-text part, from the shared layout in server/mail (JustApp copies it, D-53). The visitor's
-//                      fixed thank-you (never their words, within limits: mayThank) goes only with CONTACT_THANKS=on;
-//                      off by default (Erik, 31 Oct: only with Turnstile and the rate limit live).
+//                      a plain-text part, from the shared layout in server/mail (JustApp copies it, D-53). Five an hour per
+//                      visitor's address and fifty a day (mayTry, mayAccept); Turnstile once TURNSTILE_SITE_KEY and the
+//                      runtime secret TURNSTILE_SECRET_KEY are both set (until then the form works without it). The
+//                      visitor's fixed thank-you (never their words, within limits: mayThank) goes only with Turnstile
+//                      live and CONTACT_THANKS=on (Erik, 31 Oct).
+//   GET  /api/contact/config  the public site key for the form's widget, or null while Turnstile is not live.
 //   POST /api/e        JustInsight's same-origin proxy (justech-analytics INGEST-CONTRACT §5, ARCHITECTURE §1): the
 //                      beacon goes to the collector with the visitor's address and country as X-JT-IP and
 //                      X-JT-Country, from Cloudflare's CF-Connecting-IP and CF-IPCountry; always 204.
@@ -22,14 +25,18 @@ const ROOT = process.env.SITE_ROOT || '/srv/site';
 const PORT = Number(process.env.SITE_PORT || 8080);
 const COLLECTOR = process.env.COLLECTOR_URL || 'https://insight.justech.uk/ingest';
 const RESEND = process.env.RESEND_API_URL || 'https://api.resend.com/emails';
+const SITEVERIFY = process.env.TURNSTILE_VERIFY_URL || 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+const TURNSTILE_SITE = process.env.TURNSTILE_SITE_KEY, TURNSTILE_SECRET = process.env.TURNSTILE_SECRET_KEY, TURNSTILE = Boolean(TURNSTILE_SITE && TURNSTILE_SECRET);
 
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8',
   '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.ico': 'image/x-icon',
   '.woff2': 'font/woff2', '.txt': 'text/plain; charset=utf-8', '.xml': 'application/xml; charset=utf-8' };
+// styles keep 'unsafe-inline' only for the style="--k:…" attributes, until those move into classes (Erik, 31 Oct)
+const csp = (scripts, frames) => `default-src 'self'; script-src ${scripts}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src ${frames}; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'`;
+const CHALLENGES = 'https://challenges.cloudflare.com'; // Turnstile, on the contact page only
 const SECURITY = { 'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'strict-origin-when-cross-origin', 'X-Frame-Options': 'DENY',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=()',
-  // styles keep 'unsafe-inline' only for the style="--k:…" attributes, until those move into classes (Erik, 31 Oct)
-  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; object-src 'none'" };
+  'Content-Security-Policy': csp("'self'", "'none'") };
 // fonts never change; the tracker's URL carries its md5; CSS and JS are not fingerprinted, so an hour; pages revalidate
 const cacheFor = p => p.startsWith('/assets/system/fonts/') || p === '/jt.js' ? 'public, max-age=31536000, immutable'
   : p.startsWith('/assets/') ? 'public, max-age=3600, stale-while-revalidate=86400'
@@ -56,6 +63,20 @@ function mayThank(email, ip, now = Date.now()) {
   if (today >= LIMIT.perDay || now - (sentTo.get(a) || -Infinity) < LIMIT.address || hour.length >= LIMIT.ipPerHour) return false;
   today++; sentTo.set(a, now); sentFrom.set(ip, [...hour, now]); return true;
 }
+// The form itself (Erik, 31 Oct): five tries an hour per address, counted before Turnstile, and fifty accepted a day in
+// all, counted after it, so bots that fail the check cannot use up the day. In memory, so a deploy starts them again.
+const FORM = { ipPerHour: 5, perDay: 50 };
+const tried = new Map(); let formDay = '', accepted = 0;
+const newFormDay = now => { const d = new Date(now).toISOString().slice(0, 10); if (d !== formDay) { formDay = d; accepted = 0; tried.clear(); } };
+function mayTry(ip, now = Date.now()) {
+  newFormDay(now);
+  const hour = (tried.get(ip) || []).filter(t => now - t < 3600e3);
+  if (hour.length >= FORM.ipPerHour) return false;
+  tried.set(ip, [...hour, now]); return true;
+}
+function mayAccept(now = Date.now()) { newFormDay(now); if (accepted >= FORM.perDay) return false; accepted++; return true; }
+const human = (token, ip) => fetch(SITEVERIFY, { method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(5000),
+  body: JSON.stringify({ secret: TURNSTILE_SECRET, response: token, remoteip: ip }) }).then(r => r.json()).then(j => j.success === true);
 const resend = (key, mail) => fetch(RESEND, { method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(10000),
   body: JSON.stringify({ from: process.env.CONTACT_FROM || 'JusTech <hello@notify.justech.uk>', ...mail }) });
 async function contact(req, res) {
@@ -66,13 +87,21 @@ async function contact(req, res) {
   if (clean(d.website, 200)) return json(res, 200); // the field only bots fill: thank them and drop it
   const f = Object.fromEntries(Object.entries(MAX).map(([k, n]) => [k, clean(d[k], n)]));
   if (!f.name || !f.message || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(f.email)) return json(res, 422, 'fields');
+  const ip = req.headers['cf-connecting-ip'] || req.socket.remoteAddress || '';
+  if (!mayTry(ip)) return json(res, 429, 'limit');
   const key = process.env.RESEND_API_KEY, to = process.env.CONTACT_TO || 'info@justech.uk';
   if (!key) return json(res, 503, 'not configured');
+  if (TURNSTILE) { // a failed check or an unreachable Cloudflare: the page opens the visitor's email app, nothing is lost
+    const token = clean(d.turnstile, 2048);
+    if (!token) return json(res, 403, 'challenge');
+    try { if (!await human(token, ip)) return json(res, 403, 'challenge'); } catch (e) { console.error('contact: siteverify unreachable', e.message); return json(res, 502, 'challenge'); }
+  }
+  if (!mayAccept()) return json(res, 429, 'limit');
   const mail = contactMail(f); // the branded HTML and its plain text (server/mail)
   try {
     const r = await resend(key, { to: [to], reply_to: f.email, subject: mail.subject, html: mail.html, text: mail.text });
     if (r.ok) {
-      if (process.env.CONTACT_THANKS === 'on' && mayThank(f.email, req.headers['cf-connecting-ip'] || req.socket.remoteAddress || ''))
+      if (TURNSTILE && process.env.CONTACT_THANKS === 'on' && mayThank(f.email, ip))
         resend(key, { to: [f.email], reply_to: to, subject: THANKS.subject, html: THANKS.html, text: THANKS.text })
           .then(t => t.ok || console.error('thanks: resend answered', t.status)).catch(e => console.error('thanks: resend unreachable', e.message));
       return json(res, 200);
@@ -116,6 +145,7 @@ async function file(req, res) {
   if (!s?.isFile()) return notFound(req, res);
   const mod = new Date(Math.floor(s.mtimeMs / 1000) * 1000), since = Date.parse(req.headers['if-modified-since'] || '');
   const headers = { 'Content-Type': TYPES[extname(full)] || 'application/octet-stream', 'Cache-Control': cacheFor(p), 'Last-Modified': mod.toUTCString() };
+  if (TURNSTILE && p === '/contact/index.html') headers['Content-Security-Policy'] = csp(`'self' ${CHALLENGES}`, CHALLENGES);
   if (since && mod.getTime() <= since) return send(res, 304, headers);
   send(res, 200, { ...headers, 'Content-Length': s.size }, req.method === 'HEAD' ? '' : await readFile(full));
 }
@@ -128,6 +158,7 @@ createServer(async (req, res) => {
   try {
     const path = (req.url || '/').split('?')[0];
     if (path === '/healthz') return send(res, 200, { 'Content-Type': 'text/plain', 'Cache-Control': 'no-store' }, 'ok');
+    if (path === '/api/contact/config') return send(res, 200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, JSON.stringify({ turnstile: TURNSTILE ? TURNSTILE_SITE : null }));
     if (path === '/api/contact') return req.method === 'POST' ? await contact(req, res) : json(res, 405, 'method');
     if (path === '/api/e') return req.method === 'POST' ? await beacon(req, res) : send(res, 204);
     if (req.method !== 'GET' && req.method !== 'HEAD') return send(res, 405, { Allow: 'GET, HEAD' });

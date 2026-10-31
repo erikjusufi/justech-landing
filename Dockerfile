@@ -1,7 +1,8 @@
 # justech.uk on Coolify (erik-main, behind Cloudflare): the static site and its two endpoints in one small Node
 # process with no dependencies (server/server.mjs). Coolify: build pack Dockerfile, port 8080 (fixed here: the server
 # ignores a generic PORT); environment RESEND_API_KEY (a secret; until it is set, the form opens the visitor's email
-# app), CONTACT_TO (default info@justech.uk), CONTACT_FROM and CONTACT_THANKS (on: the visitor's thank-you mail; default off) optional.
+# app), CONTACT_TO (default info@justech.uk) and CONTACT_FROM optional; TURNSTILE_SITE_KEY with the secret TURNSTILE_SECRET_KEY
+# turn the form's check on; CONTACT_THANKS=on, with Turnstile live, the visitor's thank-you mail.
 FROM node:22-alpine
 WORKDIR /srv
 # .dockerignore lets in only the built site and its server, so nothing Coolify writes into the build context (its
