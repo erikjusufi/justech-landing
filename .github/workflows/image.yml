@@ -14,8 +14,17 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+      - name: Put what Coolify writes into the build context there too (30 Oct, its docker-compose.yaml answered 200)
+        run: |
+          printf 'services: {}\n' > docker-compose.yaml; printf 'RESEND_API_KEY=decoy\n' > .env; printf 'X=1\n' > .env.production
+          mkdir -p .nixpacks docs tests; touch .nixpacks/plan.json docs/notes.md tests/x.sh
       - name: Build the image
         run: docker build -t justech-site .
+      - name: The image holds the site and its server, nothing else
+        run: |
+          leaks=$(docker run --rm --entrypoint sh justech-site -c 'find /srv \( -name "docker-compose*" -o -name ".env*" -o -name ".git*" -o -name .nixpacks -o -name docs -o -name tests -o -name Dockerfile -o -name .dockerignore -o -name README.md -o -name check.sh \)')
+          [ -z "$leaks" ] || { echo "in the image:"; echo "$leaks"; exit 1; }
+          docker run --rm --entrypoint sh justech-site -c 'ls -A /srv /srv/site'
       - name: Run it (as Coolify does, with its predefined variables)
         run: docker run -d --name site -p 8080:8080 -e HOST=0.0.0.0 -e PORT=8080 -e COOLIFY_FQDN=justech.uk justech-site
       - name: Wait for the image's own health check

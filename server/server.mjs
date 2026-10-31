@@ -11,8 +11,8 @@
 //                      X-JT-Country, from Cloudflare's CF-Connecting-IP and CF-IPCountry; always 204.
 //   GET  /healthz      for the container's health check.
 import { createServer } from 'node:http';
-import { stat, readFile } from 'node:fs/promises';
-import { join, normalize, extname } from 'node:path';
+import { stat, readFile, readdir } from 'node:fs/promises';
+import { join, normalize, extname, relative, sep } from 'node:path';
 import { contactMail, thanksMail } from './mail/mail.mjs';
 
 const ROOT = process.env.SITE_ROOT || '/srv/site';
@@ -89,17 +89,27 @@ async function beacon(req, res) {
   send(res, 204, { 'Cache-Control': 'no-store' });
 }
 
-// the static site
+// the static site, as an allowlist: the files of a type in TYPES found under ROOT at start, never a dotfile or anything
+// under server/ (30 Oct: Coolify's docker-compose.yaml was in the build context and answered 200); a file that appears
+// later, or of any other type, is a 404
+async function walk(dir) {
+  const out = [];
+  for (const e of await readdir(dir, { withFileTypes: true })) {
+    if (e.name.startsWith('.')) continue;
+    const full = join(dir, e.name);
+    if (e.isDirectory()) out.push(...await walk(full)); else if (e.isFile() && TYPES[extname(e.name)]) out.push('/' + relative(ROOT, full).split(sep).join('/'));
+  }
+  return out;
+}
+const SITE = new Set((await walk(ROOT)).filter(p => !p.startsWith('/server/')));
+const DIRS = new Set([...SITE].filter(p => p.endsWith('/index.html')).map(p => p.slice(0, -'index.html'.length)));
 async function file(req, res) {
   let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch { return send(res, 400); }
   p = normalize(p);
-  // dotfiles, and the server's own files (removed in the image anyway), are never served
-  if (p.includes('\0') || p.split('/').some(s => s.startsWith('.')) || p.startsWith('/server/') || p === '/Dockerfile') return notFound(req, res);
-  let full = join(ROOT, p), s = await stat(full).catch(() => null);
-  if (s?.isDirectory()) {
-    if (!p.endsWith('/')) return send(res, 301, { Location: p + '/' + (new URL(req.url, 'http://x').search) });
-    full = join(full, 'index.html'); s = await stat(full).catch(() => null);
-  }
+  if (!p.endsWith('/') && DIRS.has(p + '/')) return send(res, 301, { Location: p + '/' + (new URL(req.url, 'http://x').search) });
+  if (p.endsWith('/')) p += 'index.html';
+  if (!SITE.has(p)) return notFound(req, res);
+  const full = join(ROOT, p), s = await stat(full).catch(() => null);
   if (!s?.isFile()) return notFound(req, res);
   const mod = new Date(Math.floor(s.mtimeMs / 1000) * 1000), since = Date.parse(req.headers['if-modified-since'] || '');
   const headers = { 'Content-Type': TYPES[extname(full)] || 'application/octet-stream', 'Cache-Control': cacheFor(p), 'Last-Modified': mod.toUTCString() };
